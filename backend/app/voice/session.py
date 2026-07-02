@@ -18,7 +18,7 @@ from .chunker import SentenceChunker
 from .. import config
 from ..db import SessionLocal
 from ..models import ConvTurn, utcnow
-from ..services import llm, pron_hook, stt, vad
+from ..services import concurrency, llm, pron_hook, stt, vad
 from ..services.tts import chatterbox_engine, piper_engine
 
 logger = logging.getLogger(__name__)
@@ -79,6 +79,12 @@ class VoiceSession:
     async def _send_bytes(self, data: bytes) -> None:
         async with self._send_lock:
             await self._ws_send_bytes(data)
+
+    async def push_event(self, msg: dict) -> None:
+        """Public send, for out-of-band pushes to this connection (e.g.
+        pron_hook's detached scoring task delivering a pron_result once
+        it finishes, well after the turn that triggered it has ended)."""
+        await self._send_json(msg)
 
     # ---- lifecycle ----
 
@@ -220,7 +226,8 @@ class VoiceSession:
         else:
             loop = asyncio.get_event_loop()
             audio = _pcm16_bytes_to_float(pcm_bytes)
-            result = await loop.run_in_executor(None, functools.partial(stt.transcribe, audio))
+            async with concurrency.gpu_lock:
+                result = await loop.run_in_executor(None, functools.partial(stt.transcribe, audio))
 
         text = result.text.strip()
         if not text:
@@ -277,27 +284,28 @@ class VoiceSession:
             messages.append({"role": "user", "content": self.opening_prompt})
 
         try:
-            async for delta in llm.stream_chat("fast", messages):
-                if first_delta_t is None:
-                    first_delta_t = time.perf_counter()
-                    latency["ref_to_llm_first_ms"] = round((first_delta_t - t_ref) * 1000, 1)
-                parts.append(delta)
-                await self._send_json(protocol.llm_delta(delta))
-                for chunk_text in chunker.feed(delta):
-                    self.state = "speaking"  # only now — real audio is about to go out
-                    await self._speak_chunk(chunk_text, assistant_turn_id, chunk_idx)
+            async with concurrency.gpu_lock:
+                async for delta in llm.stream_chat("fast", messages):
+                    if first_delta_t is None:
+                        first_delta_t = time.perf_counter()
+                        latency["ref_to_llm_first_ms"] = round((first_delta_t - t_ref) * 1000, 1)
+                    parts.append(delta)
+                    await self._send_json(protocol.llm_delta(delta))
+                    for chunk_text in chunker.feed(delta):
+                        self.state = "speaking"  # only now — real audio is about to go out
+                        await self._speak_chunk(chunk_text, assistant_turn_id, chunk_idx)
+                        if first_audio_t is None:
+                            first_audio_t = time.perf_counter()
+                            latency["ref_to_first_audio_ms"] = round((first_audio_t - t_ref) * 1000, 1)
+                        chunk_idx += 1
+
+                tail = chunker.flush()
+                if tail:
+                    self.state = "speaking"
+                    await self._speak_chunk(tail, assistant_turn_id, chunk_idx)
                     if first_audio_t is None:
                         first_audio_t = time.perf_counter()
                         latency["ref_to_first_audio_ms"] = round((first_audio_t - t_ref) * 1000, 1)
-                    chunk_idx += 1
-
-            tail = chunker.flush()
-            if tail:
-                self.state = "speaking"
-                await self._speak_chunk(tail, assistant_turn_id, chunk_idx)
-                if first_audio_t is None:
-                    first_audio_t = time.perf_counter()
-                    latency["ref_to_first_audio_ms"] = round((first_audio_t - t_ref) * 1000, 1)
         except asyncio.CancelledError:
             interrupted = True
         finally:

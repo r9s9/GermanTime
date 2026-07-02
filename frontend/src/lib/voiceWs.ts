@@ -1,3 +1,6 @@
+export type PhoneScore = { p: string; score: number; t0: number; t1: number };
+export type WordScore = { w: string; score: number; phones: PhoneScore[] };
+
 export type VoiceEvent =
   | { t: "ready"; conv_id: string }
   | { t: "vad"; state: "speech_start" | "speech_end" }
@@ -8,7 +11,7 @@ export type VoiceEvent =
   | { t: "tts_end"; turn_id: string }
   | { t: "barge_in" }
   | { t: "turn_stats"; turn_id: string; latency: Record<string, number> }
-  | { t: "pron_result"; turn_id: string; words: unknown[] }
+  | { t: "pron_result"; turn_id: string; words: WordScore[] }
   | { t: "error"; message: string };
 
 export class VoiceSocket {

@@ -47,11 +47,26 @@ PIPER_VOICES_EXTRA = ["de_DE-eva_k-x_low", "de_DE-kerstin-low", "de_DE-karlsson-
 CHATTERBOX_ENABLED_DEFAULT = True
 W2V2_PHONEME_MODEL = "facebook/wav2vec2-xlsr-53-espeak-cv-ft"
 
+# ---- Pronunciation (GOP) ----
+FORCED_ALIGN_BACKEND = "torchaudio"  # torchaudio|viterbi — torchaudio.functional.forced_align
+                                      # is deprecated (removal planned for torchaudio 2.9); "viterbi"
+                                      # is the vendored pure-torch fallback in pron/aligner.py
+# raw GOP (mean log P(target|frame) - log max P(*|frame)) -> 0..100 via
+# 100/(1+exp(-a*(raw-b))). Fit by `python -m app.services.pron.calibrate`
+# against good-vs-mismatched Piper recordings (see that module's docstring);
+# gave clean utterance-level separation (good min - bad max = 59 pts).
+GOP_CALIBRATION_A = 0.6407
+GOP_CALIBRATION_B = -3.2099
+PHONEME_EMA_ALPHA = 0.15
+PHONEME_WEAK_THRESHOLD = 70.0
+PHONEME_WEAK_MIN_N = 5
+
 # ---- Planner ----
 CORE_MINUTES = 20
 GOAL_MONTHS = 6
 
 _dlls_wired = False
+_espeak_wired = False
 
 
 def wire_dlls() -> None:
@@ -66,6 +81,30 @@ def wire_dlls() -> None:
     if torch_lib.exists():
         os.add_dll_directory(str(torch_lib))
     _dlls_wired = True
+
+
+def wire_espeak() -> None:
+    """Point phonemizer's espeak backend at the espeakng-loader wheel's
+    bundled library instead of a system install (there isn't one).
+
+    set_library() alone is not enough on Windows: the bundled DLL was
+    compiled with a CI build path baked in as its default data directory
+    (e.g. "D:/a/espeakng-loader/.../espeak-ng-data", which doesn't exist
+    here), and phonemizer's wrapper always calls espeak_Initialize with a
+    NULL path, so that bogus compiled-in default is what espeak-ng tries
+    first. Found by scanning the DLL's strings for env-var names it
+    references: ESPEAK_DATA_PATH overrides that default at init time.
+    Must run before any phonemizer/Wav2Vec2Phoneme* import.
+    """
+    global _espeak_wired
+    if _espeak_wired:
+        return
+    import espeakng_loader
+    from phonemizer.backend.espeak.wrapper import EspeakWrapper
+
+    os.environ["ESPEAK_DATA_PATH"] = espeakng_loader.get_data_path()
+    EspeakWrapper.set_library(espeakng_loader.get_library_path())
+    _espeak_wired = True
 
 
 def ensure_dirs() -> None:

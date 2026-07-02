@@ -19,6 +19,11 @@ from ..voice.session import VoiceSession
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+# conv_id -> live session, so pron_hook's detached background scoring task
+# (which only gets conv_id/turn_id, no WS handle — see that module) can
+# push a pron_result event to the right connection once scoring finishes.
+active_sessions: dict[str, VoiceSession] = {}
+
 
 def _load_conversation_context(conv_id: str):
     with SessionLocal() as db:
@@ -71,6 +76,7 @@ async def voice_ws(websocket: WebSocket, conv_id: str) -> None:
     if not ctx["history"]:  # fresh conversation — the tutor speaks first
         await session.start_greeting()
 
+    active_sessions[conv_id] = session
     try:
         while True:
             message = await websocket.receive()
@@ -91,4 +97,6 @@ async def voice_ws(websocket: WebSocket, conv_id: str) -> None:
     except Exception:  # noqa: BLE001
         logger.exception("voice_ws session error (conv_id=%s)", conv_id)
     finally:
+        if active_sessions.get(conv_id) is session:
+            del active_sessions[conv_id]
         await session.close()

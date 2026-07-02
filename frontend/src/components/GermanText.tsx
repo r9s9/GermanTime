@@ -4,11 +4,11 @@ import { api } from "../lib/api";
 
 type Gloss = { id?: number; lemma: string; pos: string; article: string; gloss_en: string; level?: string; source?: string };
 
-function tokenize(text: string): string[] {
+export function tokenize(text: string): string[] {
   return text.match(/[\p{L}\p{M}']+|[^\p{L}\p{M}']+/gu) ?? [text];
 }
 
-function isWord(tok: string): boolean {
+export function isWord(tok: string): boolean {
   return /\p{L}/u.test(tok);
 }
 

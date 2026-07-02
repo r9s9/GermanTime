@@ -3,6 +3,7 @@ import {
   PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer,
 } from "recharts";
 
+import { PronProfile } from "../components/PronProfile";
 import { api } from "../lib/api";
 import { SKILL_LABELS, SKILL_ORDER } from "../lib/skills";
 
@@ -102,6 +103,11 @@ export default function Fortschritt() {
           </div>
         </div>
       )}
+
+      <div className="mt-6">
+        <h2 className="mb-3 text-sm font-semibold text-mute">Aussprache</h2>
+        <PronProfile />
+      </div>
     </div>
   );
 }

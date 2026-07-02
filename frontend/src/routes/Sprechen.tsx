@@ -4,13 +4,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { GermanText } from "../components/GermanText";
 import { Icon } from "../components/Icon";
+import { PronCaption } from "../components/PronCaption";
 import { api } from "../lib/api";
 import { startMicCapture } from "../lib/micCapture";
 import { ChunkedPlayer } from "../lib/voicePlayer";
-import { VoiceEvent, VoiceSocket } from "../lib/voiceWs";
+import { VoiceEvent, VoiceSocket, WordScore } from "../lib/voiceWs";
 
 type Scenario = { id: string; title_de: string; title_en: string; min_level: string };
-type Turn = { id: string; role: "user" | "assistant"; text: string; interrupted?: boolean };
+type Turn = { id: string; role: "user" | "assistant"; text: string; interrupted?: boolean; pronWords?: WordScore[] };
 type PipelineState = "connecting" | "listening" | "thinking" | "speaking";
 
 export default function Sprechen() {
@@ -127,6 +128,9 @@ export default function Sprechen() {
       case "turn_stats":
         setLastLatency(e.latency);
         break;
+      case "pron_result":
+        setTurns((t) => t.map((turn) => (turn.id === e.turn_id ? { ...turn, pronWords: e.words } : turn)));
+        break;
       case "error":
         setError(e.message);
         break;
@@ -209,7 +213,7 @@ export default function Sprechen() {
               className={`flex ${t.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${t.role === "user" ? "bg-gold/10 text-ink" : "bg-white/5"} ${t.interrupted ? "opacity-60" : ""}`}>
-                <GermanText text={t.text} />
+                {t.role === "user" ? <PronCaption text={t.text} words={t.pronWords} /> : <GermanText text={t.text} />}
                 {t.interrupted && <span className="ml-1 text-[10px] text-mute">(unterbrochen)</span>}
               </div>
             </motion.div>

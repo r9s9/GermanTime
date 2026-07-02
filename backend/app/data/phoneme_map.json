@@ -3,9 +3,9 @@
   "groups": [
     { "name_de": "Umlaute (kurz/lang)", "phonemes": ["ʏ", "yː", "œ", "øː", "ɛ", "ɛː", "eː"] },
     { "name_de": "Ich- und Ach-Laut", "phonemes": ["ç", "x"] },
-    { "name_de": "R-Laute", "phonemes": ["ʁ", "ɐ", "ɾ"] },
-    { "name_de": "Vokale", "phonemes": ["a", "aː", "ɪ", "iː", "ʊ", "uː", "ɔ", "oː", "ə"] },
-    { "name_de": "Diphthonge", "phonemes": ["aɪ", "aʊ", "ɔʏ", "ɔɪ"] },
+    { "name_de": "R-Laute", "phonemes": ["r", "ɾ", "ɜ"] },
+    { "name_de": "Vokale", "phonemes": ["a", "ɑː", "ɪ", "iː", "ʊ", "uː", "ɔ", "oː", "ə"] },
+    { "name_de": "Diphthonge", "phonemes": ["aɪ", "aʊ", "ɔø"] },
     { "name_de": "Konsonanten", "phonemes": ["p", "b", "t", "d", "k", "ɡ", "f", "v", "s", "z", "ʃ", "ʒ", "h", "j", "l", "m", "n", "ŋ"] },
     { "name_de": "Affrikaten", "phonemes": ["pf", "ts", "tʃ", "dʒ"] }
   ],
@@ -16,12 +16,12 @@
     "øː": { "de": "Langes ö wie in „schön“: eeee mit stark gerundeten Lippen.", "en": "Long ö as in 'schön': long e with strongly rounded lips." },
     "ç": { "de": "Ich-Laut wie in „ich“: Luft über die Zungenmitte, wie ein geflüstertes j.", "en": "The 'ich' sound: like a whispered y, air over the middle of the tongue." },
     "x": { "de": "Ach-Laut wie in „Buch“: hinten im Rachen reiben, nach a/o/u.", "en": "The 'ach' sound as in 'Buch': friction at the back of the throat." },
-    "ʁ": { "de": "Deutsches r wie in „rot“: hinten im Rachen, nicht gerollt.", "en": "German r as in 'rot': produced at the back of the throat, not rolled." },
-    "ɐ": { "de": "Vokalisiertes r am Ende wie in „Wasser“: fast wie ein kurzes a.", "en": "Vocalized r at word end ('Wasser'): almost a short a." },
+    "r": { "de": "Deutsches r wie in „rot“: hinten im Rachen, nicht gerollt.", "en": "German r as in 'rot': produced at the back of the throat, not rolled." },
+    "ɜ": { "de": "Vokalisiertes r am Ende wie in „Wasser“: fast wie ein kurzes a.", "en": "Vocalized r at word end ('Wasser'): almost a short a." },
     "ts": { "de": "z wie in „Zeit“: t und s ganz schnell zusammen.", "en": "German z as in 'Zeit': t+s pronounced together." },
     "pf": { "de": "pf wie in „Pfund“: p und f zusammen sprechen.", "en": "pf as in 'Pfund': p and f together." },
     "ŋ": { "de": "ng wie in „lang“: kein hörbares g am Ende!", "en": "ng as in 'lang': no audible g at the end!" },
     "ʃ": { "de": "sch wie in „schön“, auch in st-/sp- am Wortanfang.", "en": "sh as in 'schön'; also st-/sp- at word start." },
-    "ɔʏ": { "de": "eu/äu wie in „heute“: von o zu ü gleiten.", "en": "eu/äu as in 'heute': glide from o to ü." }
+    "ɔø": { "de": "eu/äu wie in „heute“: von o zu ü gleiten.", "en": "eu/äu as in 'heute': glide from o to ü." }
   }
 }

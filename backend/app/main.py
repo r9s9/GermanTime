@@ -13,6 +13,7 @@ from .api import all_routers
 from .db import SessionLocal, init_db
 from .models import Setting
 from .services import factory, stt, vad
+from .services.pron import aligner as pron_aligner
 from .services.tts import chatterbox_engine, piper_engine
 
 logger = logging.getLogger(__name__)
@@ -38,6 +39,7 @@ async def _warmup_voice_stack() -> None:
     transfer that every later turn gets for free.
     """
     loop = asyncio.get_event_loop()
+    config.wire_espeak()
     with SessionLocal() as db:
         engine_row = db.get(Setting, "voice_engine")
     engine = engine_row.value if engine_row and engine_row.value else "piper"
@@ -47,6 +49,7 @@ async def _warmup_voice_stack() -> None:
         await loop.run_in_executor(None, piper_engine.warmup)
         if engine == "chatterbox":
             await loop.run_in_executor(None, chatterbox_engine.warmup)
+        await loop.run_in_executor(None, pron_aligner.warmup)
         logger.info("voice stack warmup complete")
     except Exception:  # noqa: BLE001
         logger.exception("voice stack warmup failed")
@@ -56,6 +59,7 @@ async def _warmup_voice_stack() -> None:
 async def lifespan(app: FastAPI):
     config.ensure_dirs()
     config.wire_dlls()
+    config.wire_espeak()
     init_db()
     task = asyncio.create_task(_factory_loop())
     warmup_task = asyncio.create_task(_warmup_voice_stack())
