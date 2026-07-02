@@ -7,7 +7,7 @@ import { Icon } from "../components/Icon";
 import { api } from "../lib/api";
 
 type Block = {
-  id: string; slot: "required" | "stretch"; type: "lesson" | "srs";
+  id: string; slot: "required" | "stretch"; type: "lesson" | "srs" | "speaking";
   params: Record<string, any>;
   status: string; minutes_est: number;
 };
@@ -24,6 +24,9 @@ function fmtDate(iso: string) {
 function blockDisplay(block: Block): { title: string; subtitle: string; icon: string } {
   if (block.type === "srs") {
     return { title: "Wiederholung", subtitle: `${block.params.due} fällig`, icon: "sparkle" };
+  }
+  if (block.type === "speaking") {
+    return { title: block.params.title_de, subtitle: `Gespräch · ~${block.minutes_est | 0} Min`, icon: "mic" };
   }
   return { title: block.params.title_de, subtitle: `${block.params.level} · ~${block.minutes_est | 0} Min`, icon: "book" };
 }
@@ -65,6 +68,10 @@ export default function Dashboard() {
   function startBlock(block: Block) {
     if (block.type === "srs") {
       navigate(`/lernen?mode=srs&block_id=${block.id}`);
+      return;
+    }
+    if (block.type === "speaking") {
+      navigate(`/sprechen?scenario_id=${block.params.scenario_id}&block_id=${block.id}`);
       return;
     }
     const params = new URLSearchParams({

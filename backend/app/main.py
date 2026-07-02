@@ -10,8 +10,10 @@ from fastapi.staticfiles import StaticFiles
 
 from . import config
 from .api import all_routers
-from .db import init_db
-from .services import factory
+from .db import SessionLocal, init_db
+from .models import Setting
+from .services import factory, stt, vad
+from .services.tts import chatterbox_engine, piper_engine
 
 logger = logging.getLogger(__name__)
 
@@ -28,14 +30,38 @@ async def _factory_loop() -> None:
         await asyncio.sleep(FACTORY_POLL_S)
 
 
+async def _warmup_voice_stack() -> None:
+    """Pays the one-time CUDA/model-load cost (VAD+STT ~2-10s, TTS session
+    init) at startup in the background instead of on the user's first
+    conversation turn — without this, turn 1 of every fresh app launch eats
+    several extra seconds waiting on cuDNN algo search / model weight
+    transfer that every later turn gets for free.
+    """
+    loop = asyncio.get_event_loop()
+    with SessionLocal() as db:
+        engine_row = db.get(Setting, "voice_engine")
+    engine = engine_row.value if engine_row and engine_row.value else "piper"
+    try:
+        await loop.run_in_executor(None, vad.warmup)
+        await loop.run_in_executor(None, stt.warmup)
+        await loop.run_in_executor(None, piper_engine.warmup)
+        if engine == "chatterbox":
+            await loop.run_in_executor(None, chatterbox_engine.warmup)
+        logger.info("voice stack warmup complete")
+    except Exception:  # noqa: BLE001
+        logger.exception("voice stack warmup failed")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     config.ensure_dirs()
     config.wire_dlls()
     init_db()
     task = asyncio.create_task(_factory_loop())
+    warmup_task = asyncio.create_task(_warmup_voice_stack())
     yield
     task.cancel()
+    warmup_task.cancel()
 
 
 app = FastAPI(title="GermanTime", lifespan=lifespan)

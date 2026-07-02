@@ -1,0 +1,26 @@
+{
+  "scenarios": [
+    { "id": "kennenlernen", "title_de": "Kennenlernen", "title_en": "Getting to know each other", "min_level": "A1.1",
+      "role_de": "ein neuer Freund", "setting_de": "Ihr trefft euch zum ersten Mal und lernt euch kennen." },
+    { "id": "cafe", "title_de": "Im Café", "title_en": "At the café", "min_level": "A1.1",
+      "role_de": "die Bedienung in einem Café", "setting_de": "Der Lernende bestellt etwas zu essen und trinken." },
+    { "id": "einkaufen", "title_de": "Einkaufen", "title_en": "Shopping", "min_level": "A1.2",
+      "role_de": "eine Verkäuferin im Geschäft", "setting_de": "Der Lernende sucht Kleidung oder ein Geschenk und fragt nach Preisen und Größen." },
+    { "id": "weg", "title_de": "Nach dem Weg fragen", "title_en": "Asking for directions", "min_level": "A1.2",
+      "role_de": "ein Passant auf der Straße", "setting_de": "Der Lernende hat sich verlaufen und fragt nach dem Weg zu einem Ort in der Stadt." },
+    { "id": "restaurant", "title_de": "Im Restaurant", "title_en": "At the restaurant", "min_level": "A2.1",
+      "role_de": "der Kellner in einem Restaurant", "setting_de": "Der Lernende bestellt ein Essen, hat vielleicht eine Frage zur Speisekarte und bittet am Ende um die Rechnung." },
+    { "id": "arzt", "title_de": "Beim Arzt", "title_en": "At the doctor", "min_level": "A2.1",
+      "role_de": "ein Arzt oder eine Ärztin", "setting_de": "Der Lernende beschreibt Beschwerden und bekommt einen Rat." },
+    { "id": "wohnung", "title_de": "Wohnungsbesichtigung", "title_en": "Apartment viewing", "min_level": "A2.2",
+      "role_de": "ein Vermieter", "setting_de": "Der Lernende besichtigt eine Wohnung und stellt Fragen dazu." },
+    { "id": "reise", "title_de": "Reise planen", "title_en": "Planning a trip", "min_level": "A2.2",
+      "role_de": "ein Freund", "setting_de": "Ihr plant gemeinsam eine Reise oder einen Ausflug und müsst euch auf Details einigen." },
+    { "id": "buero", "title_de": "Im Büro", "title_en": "At the office", "min_level": "B1.1",
+      "role_de": "ein Kollege oder eine Kollegin", "setting_de": "Ihr sprecht über ein Projekt bei der Arbeit und tauscht Meinungen aus." },
+    { "id": "meinung", "title_de": "Meinungsaustausch", "title_en": "Discussing opinions", "min_level": "B1.1",
+      "role_de": "ein Freund mit einer anderen Meinung", "setting_de": "Ihr diskutiert über ein Alltagsthema (z. B. Umwelt, Medien) und begründet eure Meinungen." },
+    { "id": "frei", "title_de": "Freies Gespräch", "title_en": "Free conversation", "min_level": "A1.1",
+      "role_de": "ein Gesprächspartner", "setting_de": "Sprecht frei über ein beliebiges Alltagsthema." }
+  ]
+}

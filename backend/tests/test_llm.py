@@ -106,3 +106,97 @@ async def test_succeeds_first_try_without_repair(monkeypatch):
 
     result = await llm.generate_structured("tutor", "sys", "usr", Simple, "simple", max_retries=1)
     assert result.value == 1
+
+
+class _FakeStreamChoice:
+    def __init__(self, content=None, reasoning_content=None):
+        self.delta = _FakeMessage(content, reasoning_content)
+
+
+class _FakeStreamChunk:
+    def __init__(self, content=None, reasoning_content=None):
+        self.choices = [_FakeStreamChoice(content, reasoning_content)]
+
+
+class _FakeStream:
+    def __init__(self, deltas):
+        self._deltas = deltas
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        if not self._deltas:
+            raise StopAsyncIteration
+        content, reasoning = self._deltas.pop(0)
+        return _FakeStreamChunk(content, reasoning)
+
+
+class _FakeStreamingCompletions:
+    def __init__(self, deltas):
+        self._deltas = deltas
+
+    async def create(self, **kwargs):
+        assert kwargs.get("stream") is True
+        return _FakeStream(list(self._deltas))
+
+
+class _FakeStreamingClient:
+    def __init__(self, deltas):
+        self.chat = type("_", (), {"completions": _FakeStreamingCompletions(deltas)})()
+
+
+@pytest.mark.asyncio
+async def test_stream_chat_yields_only_content_deltas(monkeypatch):
+    _stub_model_resolution(monkeypatch)
+    deltas = [(None, "Denke "), (None, "nach..."), ("Hallo", None), (" Welt", None)]
+    monkeypatch.setattr(llm, "_client", lambda: _FakeStreamingClient(deltas))
+
+    chunks = [c async for c in llm.stream_chat("fast", [{"role": "user", "content": "hi"}])]
+    assert "".join(chunks) == "Hallo Welt"  # reasoning_content deltas are skipped
+
+
+def _use_test_db_for_resolve_model(monkeypatch):
+    """resolve_model() opens its own session via a module-level SessionLocal
+    import, bound at collection time (before db_session's app.* purge) — so
+    it needs its own patch to see the isolated test DB, unlike functions
+    that take `db` as an explicit parameter."""
+    from app.db import SessionLocal as fresh_session_local
+
+    monkeypatch.setattr(llm, "SessionLocal", fresh_session_local)
+
+
+@pytest.mark.asyncio
+async def test_fast_role_avoids_thinking_models_when_auto_assigning(db_session, monkeypatch):
+    _use_test_db_for_resolve_model(monkeypatch)
+
+    async def fake_list_models():
+        return ["qwen/qwen3.5-35b-a3b", "qwen2.5-14b-instruct", "text-embedding-nomic-embed-text-v1.5"]
+
+    monkeypatch.setattr(llm, "list_models", fake_list_models)
+    model_id = await llm.resolve_model("fast")
+    assert model_id == "qwen2.5-14b-instruct"
+
+
+@pytest.mark.asyncio
+async def test_tutor_role_has_no_thinking_model_bias(db_session, monkeypatch):
+    _use_test_db_for_resolve_model(monkeypatch)
+
+    async def fake_list_models():
+        return ["qwen/qwen3.5-35b-a3b", "qwen2.5-14b-instruct"]
+
+    monkeypatch.setattr(llm, "list_models", fake_list_models)
+    model_id = await llm.resolve_model("tutor")
+    assert model_id == "qwen/qwen3.5-35b-a3b"  # first available, no bias applied
+
+
+@pytest.mark.asyncio
+async def test_fast_role_falls_back_to_first_model_if_all_are_thinking_models(db_session, monkeypatch):
+    _use_test_db_for_resolve_model(monkeypatch)
+
+    async def fake_list_models():
+        return ["qwen/qwen3.5-35b-a3b", "qwen/qwen3-32b"]
+
+    monkeypatch.setattr(llm, "list_models", fake_list_models)
+    model_id = await llm.resolve_model("fast")
+    assert model_id == "qwen/qwen3.5-35b-a3b"

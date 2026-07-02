@@ -36,6 +36,7 @@ MAX_UTTERANCE_S = 15
 BARGE_IN_WINDOWS = 3               # consecutive speech windows to trigger barge-in
 TTS_MIN_CHUNK_WORDS = 3
 TTS_COMMA_SPLIT_AFTER_WORDS = 12
+CONV_HISTORY_MESSAGES = 12          # rolling window of chat messages sent to the LLM
 
 # ---- Models ----
 WHISPER_MODEL = "large-v3-turbo"

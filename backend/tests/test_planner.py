@@ -17,9 +17,11 @@ def test_build_plan_day_creates_required_and_stretch_blocks(db_session):
     blocks = db_session.scalars(select(PlanBlock).where(PlanBlock.date == "2026-01-01")).all()
     required = [b for b in blocks if b.slot == "required"]
     stretch = [b for b in blocks if b.slot == "stretch"]
-    assert len(required) == planner.CORE_LESSON_BLOCKS
+    # CORE_LESSON_BLOCKS lessons + 1 mandatory speaking block
+    assert len(required) == planner.CORE_LESSON_BLOCKS + 1
     assert len(stretch) == planner.STRETCH_LESSON_BLOCKS
-    assert all(b.type == "lesson" for b in blocks)
+    assert sum(1 for b in required if b.type == "speaking") == 1
+    assert all(b.type == "lesson" for b in stretch)
 
 
 def test_build_plan_day_is_idempotent_without_force(db_session):
@@ -45,7 +47,7 @@ def test_never_attempted_topics_prioritized_over_mastered(db_session):
 
     planner.build_plan_day(db_session, "2026-02-01")
     blocks = db_session.scalars(
-        select(PlanBlock).where(PlanBlock.date == "2026-02-01", PlanBlock.slot == "required")
+        select(PlanBlock).where(PlanBlock.date == "2026-02-01", PlanBlock.slot == "required", PlanBlock.type == "lesson")
     ).all()
     required_topic_ids = [b.params["topic_id"] for b in blocks]
     assert first.id not in required_topic_ids  # mastered -> deprioritized
@@ -81,14 +83,43 @@ def test_srs_due_cards_produce_a_required_srs_block(db_session):
 
     assert len(srs_blocks) == 1
     assert srs_blocks[0].slot == "required"
-    # a lesson slot is trimmed to make room, so total required count is unchanged
-    assert len(required) == planner.CORE_LESSON_BLOCKS
+    # a lesson slot is trimmed to make room for srs, so total required count
+    # is unchanged apart from the always-present speaking block
+    assert len(required) == planner.CORE_LESSON_BLOCKS + 1
 
 
 def test_no_srs_block_when_nothing_due(db_session):
     planner.build_plan_day(db_session, "2026-03-02")
     blocks = db_session.scalars(select(PlanBlock).where(PlanBlock.date == "2026-03-02")).all()
     assert not any(b.type == "srs" for b in blocks)
+
+
+def test_every_day_gets_exactly_one_required_speaking_block(db_session):
+    planner.build_plan_day(db_session, "2026-03-03")
+    blocks = db_session.scalars(select(PlanBlock).where(PlanBlock.date == "2026-03-03")).all()
+    speaking = [b for b in blocks if b.type == "speaking"]
+    assert len(speaking) == 1
+    assert speaking[0].slot == "required"
+    assert speaking[0].params["scenario_id"]
+
+
+def test_pick_scenario_for_day_is_deterministic(db_session):
+    a = planner.pick_scenario_for_day("A1.1", "2026-03-03")
+    b = planner.pick_scenario_for_day("A1.1", "2026-03-03")
+    assert a == b
+
+
+def test_pick_scenario_for_day_respects_level_gating(db_session):
+    from app.services import content
+
+    beginner_scenario_ids = set()
+    for i in range(30):
+        d = f"2026-{(i % 12) + 1:02d}-{(i % 27) + 1:02d}"
+        beginner_scenario_ids.add(planner.pick_scenario_for_day("A1.1", d))
+
+    all_min_levels = {s["id"]: s["min_level"] for s in content.scenarios()}
+    b1_only = {sid for sid, lvl in all_min_levels.items() if lvl.startswith("B1")}
+    assert not (beginner_scenario_ids & b1_only)  # a true beginner never gets a B1-gated scenario
 
 
 def test_complete_block_does_not_mark_core_done_if_required_blocks_remain(db_session):
@@ -110,7 +141,9 @@ def _simulate_days(db_session, n_days: int, success_rate: float, seed: int = 42)
         d = start + timedelta(days=i)
         d_str = d.isoformat()
         planner.build_plan_day(db_session, d_str)
-        blocks = db_session.scalars(select(PlanBlock).where(PlanBlock.date == d_str)).all()
+        blocks = db_session.scalars(
+            select(PlanBlock).where(PlanBlock.date == d_str, PlanBlock.type == "lesson")
+        ).all()
         for b in blocks:
             score = 1.0 if rng.random() < success_rate else 0.0
             learner.update_from_exercise_attempt(db_session, "mc", b.params["level"], score)

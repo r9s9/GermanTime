@@ -1,9 +1,9 @@
 """Daily plan composition.
 
-"lesson" blocks (P2) and "srs" blocks (P4) exist today. P6/P7/P8 each extend
-this module with their own block type as they land — the composition shape
-(required core + ranked stretch queue) is already the final design; later
-phases add generators, they don't restructure this.
+"lesson" (P2), "srs" (P4), and "speaking" (P6) blocks exist today. P7/P8
+each extend this module with their own block type as they land — the
+composition shape (required core + ranked stretch queue) is already the
+final design; later phases add generators, they don't restructure this.
 """
 
 from datetime import date, timedelta
@@ -11,7 +11,7 @@ from datetime import date, timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from . import learner, srs
+from . import content, learner, srs
 from ..models import GrammarMastery, GrammarTopic, PlanBlock, PlanDay
 
 CORE_LESSON_BLOCKS = 2
@@ -19,6 +19,23 @@ STRETCH_LESSON_BLOCKS = 3
 MINUTES_PER_LESSON = 10.0
 SRS_BLOCK_MINUTES = 8.0
 SRS_BLOCK_CARD_CAP = 20
+SPEAKING_BLOCK_MINUTES = 5.0
+
+_LEVEL_ORDER = [b[0] for b in learner.CEFR_BANDS]
+
+
+def _level_rank(level: str) -> int:
+    return _LEVEL_ORDER.index(level) if level in _LEVEL_ORDER else -1
+
+
+def pick_scenario_for_day(level: str, date_str: str) -> str:
+    """Deterministic per-day pick (stable across page refreshes) among
+    scenarios unlocked at the learner's current level."""
+    current_rank = _level_rank(level)
+    eligible = [s for s in content.scenarios() if _level_rank(s["min_level"]) <= current_rank]
+    eligible = eligible or content.scenarios()
+    idx = sum(ord(c) for c in date_str) % len(eligible)
+    return eligible[idx]["id"]
 
 
 def _topic_priority(mastery: dict[str, GrammarMastery], topic: GrammarTopic) -> tuple[int, float]:
@@ -44,7 +61,7 @@ def _make_lesson_block(date_str: str, slot: str, topic: GrammarTopic, sort: int)
     )
 
 
-def _compose_blocks(db: Session, date_str: str) -> list[PlanBlock]:
+def _compose_blocks(db: Session, date_str: str, level: str) -> list[PlanBlock]:
     blocks: list[PlanBlock] = []
     sort = 0
     lesson_slots = CORE_LESSON_BLOCKS
@@ -58,6 +75,15 @@ def _compose_blocks(db: Session, date_str: str) -> list[PlanBlock]:
         ))
         sort += 1
         lesson_slots = max(1, CORE_LESSON_BLOCKS - 1)  # trim a lesson slot so core stays ~20 min
+
+    scenario_id = pick_scenario_for_day(level, date_str)
+    scenario = content.scenario_by_id(scenario_id)
+    blocks.append(PlanBlock(
+        date=date_str, slot="required", type="speaking",
+        params={"scenario_id": scenario_id, "level": level, "title_de": scenario["title_de"], "title_en": scenario["title_en"]},
+        minutes_est=SPEAKING_BLOCK_MINUTES, sort=sort,
+    ))
+    sort += 1
 
     ranked = _ranked_topics(db)
     if not ranked:
@@ -80,7 +106,9 @@ def build_plan_day(db: Session, date_str: str, force: bool = False) -> PlanDay:
         return existing
 
     thetas = learner.get_all_thetas(db)
-    week = learner.week_for_theta(learner.overall_theta(thetas))
+    overall = learner.overall_theta(thetas)
+    week = learner.week_for_theta(overall)
+    speaking_level = learner.cefr_label(thetas.get("speaking") or overall)
 
     if existing:
         for b in db.scalars(select(PlanBlock).where(PlanBlock.date == date_str, PlanBlock.status == "open")):
@@ -94,7 +122,7 @@ def build_plan_day(db: Session, date_str: str, force: bool = False) -> PlanDay:
         db.add(day)
     db.flush()
 
-    for block in _compose_blocks(db, date_str):
+    for block in _compose_blocks(db, date_str, speaking_level):
         db.add(block)
     db.commit()
     db.refresh(day)

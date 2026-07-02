@@ -8,6 +8,7 @@ before giving up.
 
 import json
 import logging
+from collections.abc import AsyncIterator
 
 import httpx
 from openai import AsyncOpenAI
@@ -48,10 +49,21 @@ async def list_models() -> list[str]:
     return (await server_status())["models"]
 
 
+# Model-name substrings for known "thinking" models where unconstrained chat
+# has a multi-hundred-ms-to-seconds think-before-answering delay (measured:
+# qwen3.5-35b-a3b took ~650ms-2.7s to first content token depending on
+# whether thinking fired) — unsuitable for the <1.5s conversational budget.
+# Only biases the "fast" role's auto-pick; the user can always override via
+# Settings. See memory: project-lmstudio-thinking-models.
+_THINKING_MODEL_HINTS = ("qwen3", "qwq", "deepseek-r1", "r1-")
+
+
 async def resolve_model(role: str) -> str:
-    """Return the model_id assigned to `role`, auto-assigning the first
-    available chat model on first use so the app works before the user
-    visits Settings.
+    """Return the model_id assigned to `role`, auto-assigning a suitable
+    chat model on first use so the app works before the user visits
+    Settings. The "fast" role (real-time conversation) prefers a model
+    that isn't a known "thinking" model, since those blow the latency
+    budget even with schema/thinking disabled.
     """
     with SessionLocal() as db:
         row = db.get(ModelRole, role)
@@ -64,7 +76,11 @@ async def resolve_model(role: str) -> str:
         raise LlmGenerationError(
             "Kein Modell in LM Studio verfügbar. Bitte LM Studio starten und ein Modell laden."
         )
-    chosen = chat_models[0]
+    if role == "fast":
+        non_thinking = [m for m in chat_models if not any(h in m.lower() for h in _THINKING_MODEL_HINTS)]
+        chosen = non_thinking[0] if non_thinking else chat_models[0]
+    else:
+        chosen = chat_models[0]
     with SessionLocal() as db:
         if db.get(ModelRole, role) is None:  # avoid clobbering a concurrent assignment
             db.add(ModelRole(role=role, model_id=chosen))
@@ -142,3 +158,20 @@ async def chat_text(role: str, system: str, user: str, temperature: float = 0.7)
         temperature=temperature,
     )
     return _effective_content(resp.choices[0].message)
+
+
+async def stream_chat(role: str, messages: list[dict], temperature: float = 0.8) -> AsyncIterator[str]:
+    """Yields content text deltas as they arrive. Silently skips
+    reasoning_content deltas (a thinking model assigned here will still
+    eventually stream real content once it finishes thinking — just slowly;
+    that's a model-choice problem for the caller/user to fix via Settings,
+    not something to paper over here).
+    """
+    model_id = await resolve_model(role)
+    stream = await _client().chat.completions.create(
+        model=model_id, messages=messages, temperature=temperature, stream=True,
+    )
+    async for chunk in stream:
+        delta = chunk.choices[0].delta
+        if getattr(delta, "content", None):
+            yield delta.content
