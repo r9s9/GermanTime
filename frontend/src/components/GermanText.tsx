@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 
 import { api } from "../lib/api";
 
-type Gloss = { lemma: string; pos: string; article: string; gloss_en: string; level?: string };
+type Gloss = { id?: number; lemma: string; pos: string; article: string; gloss_en: string; level?: string; source?: string };
 
 function tokenize(text: string): string[] {
   return text.match(/[\p{L}\p{M}']+|[^\p{L}\p{M}']+/gu) ?? [text];
@@ -32,6 +32,7 @@ function WordSpan({ word, sentence }: { word: string; sentence: string }) {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [srsState, setSrsState] = useState<"idle" | "adding" | "added">("idle");
   const timer = useRef<number | undefined>(undefined);
 
   function onEnter() {
@@ -58,13 +59,25 @@ function WordSpan({ word, sentence }: { word: string; sentence: string }) {
     setOpen(false);
   }
 
+  async function addToSrs(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!gloss?.id || srsState !== "idle") return;
+    setSrsState("adding");
+    try {
+      await api("/api/srs/add-vocab", { json: { vocab_id: gloss.id, direction: "de_en" } });
+      setSrsState("added");
+    } catch {
+      setSrsState("idle");
+    }
+  }
+
   return (
     <span className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
       <span className="cursor-help border-b border-dotted border-mute/40 transition-colors hover:border-gold/60 hover:text-gold">
         {word}
       </span>
       {open && (
-        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-1.5 w-max max-w-56 -translate-x-1/2 rounded-lg border border-line bg-raised px-3 py-2 text-xs normal-case shadow-xl">
+        <span className="pointer-events-auto absolute left-1/2 top-full z-50 mt-1.5 w-max max-w-56 -translate-x-1/2 rounded-lg border border-line bg-raised px-3 py-2 text-xs normal-case shadow-xl">
           {loading && <span className="text-mute">Lädt …</span>}
           {failed && <span className="text-ember">Übersetzung nicht verfügbar</span>}
           {gloss && (
@@ -74,6 +87,15 @@ function WordSpan({ word, sentence }: { word: string; sentence: string }) {
                 {gloss.lemma}
               </div>
               <div className="text-mute">{gloss.gloss_en}</div>
+              {gloss.source === "vocab" && (
+                <button
+                  onClick={addToSrs}
+                  disabled={srsState !== "idle"}
+                  className={`mt-1.5 text-[11px] font-medium ${srsState === "added" ? "text-mint" : "text-gold hover:underline"}`}
+                >
+                  {srsState === "added" ? "✓ Zur Wiederholung hinzugefügt" : "+ Zur Wiederholung"}
+                </button>
+              )}
             </>
           )}
         </span>

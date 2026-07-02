@@ -1,15 +1,19 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Exercise, ExercisePlayer } from "../components/ExercisePlayer";
 import { Icon } from "../components/Icon";
+import { SrsReview } from "../components/SrsReview";
 import { api } from "../lib/api";
 
 type Topic = { id: string; level: string; week: number; title_de: string; title_en: string };
 
 export default function Lernen() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const srsMode = searchParams.get("mode") === "srs";
+  const srsBlockId = searchParams.get("block_id") ?? undefined;
   const [topics, setTopics] = useState<Topic[]>([]);
   const [selected, setSelected] = useState<Topic | null>(null);
   const [blockId, setBlockId] = useState<string | null>(null);
@@ -22,11 +26,13 @@ export default function Lernen() {
   const autoStarted = useRef(false);
 
   useEffect(() => {
+    if (srsMode) return;
     api<Topic[]>("/api/grammar/topics").then(setTopics).catch((e) => setError(String(e)));
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [srsMode]);
 
   useEffect(() => {
-    if (autoStarted.current || topics.length === 0) return;
+    if (srsMode || autoStarted.current || topics.length === 0) return;
     const topicId = searchParams.get("topic_id");
     const block = searchParams.get("block_id");
     if (!topicId) return;
@@ -77,6 +83,18 @@ export default function Lernen() {
     setBlockId(null);
     setExercises(null);
     setScores([]);
+  }
+
+  if (srsMode) {
+    return (
+      <div>
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-semibold">Wiederholung</h1>
+          <button className="btn-ghost" onClick={() => navigate("/")}><Icon name="x" size={16} /> Beenden</button>
+        </div>
+        <SrsReview blockId={srsBlockId} onDone={() => navigate("/")} />
+      </div>
+    );
   }
 
   if (selected && exercises) {

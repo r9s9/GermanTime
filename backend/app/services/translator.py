@@ -26,7 +26,7 @@ async def translate_word(db: Session, word: str, sentence: str = "") -> dict:
     item = db.scalar(select(VocabItem).where(VocabItem.lemma == word))
     if item:
         return {
-            "lemma": item.lemma, "pos": item.pos, "article": item.article or "",
+            "id": item.id, "lemma": item.lemma, "pos": item.pos, "article": item.article or "",
             "gloss_en": item.en_gloss, "level": item.level, "source": "vocab",
         }
 

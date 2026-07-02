@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from ..db import get_db
 from ..models import Exercise, ExerciseAttempt, GrammarTopic, utcnow
-from ..services import factory, grader, learner
+from ..services import errors, factory, grader, learner
 
 router = APIRouter(prefix="/api", tags=["exercises"])
 
@@ -67,5 +67,6 @@ def attempt(exercise_id: str, body: AttemptIn, db: Session = Depends(get_db)) ->
 
     learner.update_from_exercise_attempt(db, ex.type, ex.level, result["score"])
     learner.update_grammar_mastery(db, ex.topic_id, result["score"])
+    errors.maybe_create_from_exercise_attempt(db, ex, body.response, result)
 
     return {"score": result["score"], "correct": result["correct"], "detail": result["detail"]}

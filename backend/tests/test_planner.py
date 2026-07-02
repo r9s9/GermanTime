@@ -67,6 +67,30 @@ def test_complete_block_updates_day_minutes_and_core_done(db_session):
     assert day.core_done is True
 
 
+def test_srs_due_cards_produce_a_required_srs_block(db_session):
+    from app.models import VocabItem
+    from app.services import srs
+
+    vocab = db_session.scalars(select(VocabItem)).first()
+    srs.create_vocab_card(db_session, vocab.id)  # new cards are immediately due
+
+    planner.build_plan_day(db_session, "2026-03-01")
+    blocks = db_session.scalars(select(PlanBlock).where(PlanBlock.date == "2026-03-01")).all()
+    srs_blocks = [b for b in blocks if b.type == "srs"]
+    required = [b for b in blocks if b.slot == "required"]
+
+    assert len(srs_blocks) == 1
+    assert srs_blocks[0].slot == "required"
+    # a lesson slot is trimmed to make room, so total required count is unchanged
+    assert len(required) == planner.CORE_LESSON_BLOCKS
+
+
+def test_no_srs_block_when_nothing_due(db_session):
+    planner.build_plan_day(db_session, "2026-03-02")
+    blocks = db_session.scalars(select(PlanBlock).where(PlanBlock.date == "2026-03-02")).all()
+    assert not any(b.type == "srs" for b in blocks)
+
+
 def test_complete_block_does_not_mark_core_done_if_required_blocks_remain(db_session):
     day = planner.build_plan_day(db_session, "2026-01-01")
     blocks = db_session.scalars(

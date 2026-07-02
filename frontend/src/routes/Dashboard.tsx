@@ -7,8 +7,8 @@ import { Icon } from "../components/Icon";
 import { api } from "../lib/api";
 
 type Block = {
-  id: string; slot: "required" | "stretch"; type: string;
-  params: { topic_id: string; level: string; title_de: string; title_en: string };
+  id: string; slot: "required" | "stretch"; type: "lesson" | "srs";
+  params: Record<string, any>;
   status: string; minutes_est: number;
 };
 type PlanDay = { date: string; syllabus_week: number; core_done: boolean; minutes_done: number; blocks: Block[] };
@@ -21,8 +21,16 @@ function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString("de-DE", { day: "2-digit", month: "long", year: "numeric" });
 }
 
+function blockDisplay(block: Block): { title: string; subtitle: string; icon: string } {
+  if (block.type === "srs") {
+    return { title: "Wiederholung", subtitle: `${block.params.due} fällig`, icon: "sparkle" };
+  }
+  return { title: block.params.title_de, subtitle: `${block.params.level} · ~${block.minutes_est | 0} Min`, icon: "book" };
+}
+
 function BlockRow({ block, onStart }: { block: Block; onStart: (b: Block) => void }) {
   const done = block.status === "done";
+  const { title, subtitle, icon } = blockDisplay(block);
   return (
     <button
       onClick={() => !done && onStart(block)}
@@ -32,11 +40,11 @@ function BlockRow({ block, onStart }: { block: Block; onStart: (b: Block) => voi
       }`}
     >
       <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${done ? "bg-mint/15 text-mint" : "bg-white/5 text-mute"}`}>
-        <Icon name={done ? "check" : "book"} size={18} />
+        <Icon name={done ? "check" : icon} size={18} />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-medium">{block.params.title_de}</div>
-        <div className="text-xs text-mute">{block.params.level} · ~{block.minutes_est | 0} Min</div>
+        <div className="truncate text-sm font-medium">{title}</div>
+        <div className="text-xs text-mute">{subtitle}</div>
       </div>
       {!done && <Icon name="play" size={16} className="shrink-0 text-mute" />}
     </button>
@@ -55,6 +63,10 @@ export default function Dashboard() {
   }, []);
 
   function startBlock(block: Block) {
+    if (block.type === "srs") {
+      navigate(`/lernen?mode=srs&block_id=${block.id}`);
+      return;
+    }
     const params = new URLSearchParams({
       block_id: block.id, topic_id: block.params.topic_id, level: block.params.level,
     });
