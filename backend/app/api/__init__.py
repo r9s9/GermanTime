@@ -1,7 +1,7 @@
 """Router registry — each phase appends its router here."""
 
 from . import (
-    conversations, exercises, factory, placement, plan, progress, pron, settings,
+    conversations, exams, exercises, factory, placement, plan, progress, pron, settings,
     srs, system, translate, tts, ws_voice,
 )
 
@@ -19,4 +19,5 @@ all_routers = [
     conversations.router,
     ws_voice.router,
     pron.router,
+    exams.router,
 ]

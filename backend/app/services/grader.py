@@ -1,7 +1,9 @@
-"""Auto-grading for the 6 exercise types (no LLM call needed).
-
-LLM-graded rubric scoring for free writing and speaking is added in P8
-(exam engine) — this module stays focused on objectively gradable items.
+"""Auto-grading for the 6 exercise types, plus the exam engine's
+objectively-gradable shapes (comprehension/matching/form — see
+examgen.py's docstring for how the 15 blueprint `kind`s map to these).
+LLM-graded rubric scoring for exam writing/speaking lives in
+exam_grading.py instead, since it needs an LLM call and error-notebook
+wiring that don't belong in this no-LLM module.
 """
 
 import difflib
@@ -83,3 +85,37 @@ def _grade_text_multi(accepted: list[str], submitted: str) -> dict:
     close = 0.75 <= best < 0.9
     return {"score": 1.0 if is_correct else round(best, 2), "correct": is_correct,
             "detail": {"accepted_answers": accepted, "close": close}}
+
+
+def grade_comprehension(answer_key: dict, response: dict) -> dict:
+    """response: {"indices": [int, ...]}, one per question, same order as
+    the payload's questions list."""
+    correct = answer_key["correct_indices"]
+    submitted = response.get("indices", [])
+    n_correct = sum(1 for i, c in enumerate(correct) if i < len(submitted) and submitted[i] == c)
+    score = n_correct / len(correct) if correct else 0.0
+    return {"score": score, "detail": {"n_correct": n_correct, "n_total": len(correct), "correct_indices": correct}}
+
+
+def grade_matching(answer_key: dict, response: dict) -> dict:
+    """response: {"options": [str, ...]}, one per situation, same order."""
+    correct = answer_key["correct_options"]
+    submitted = response.get("options", [])
+    n_correct = sum(1 for i, c in enumerate(correct) if i < len(submitted) and submitted[i] == c)
+    score = n_correct / len(correct) if correct else 0.0
+    return {"score": score, "detail": {"n_correct": n_correct, "n_total": len(correct), "correct_options": correct}}
+
+
+def grade_form(answer_key: dict, response: dict) -> dict:
+    """response: {"answers": [str, ...]}, one per blank. Form answers are
+    short factual fills (names, dates, numbers) so this is more lenient
+    than cloze's near-exact match."""
+    expected = answer_key["expected_answers"]
+    submitted = response.get("answers", [])
+    per_blank = []
+    for i, exp in enumerate(expected):
+        sub = submitted[i] if i < len(submitted) else ""
+        ratio = _similarity(exp, sub) if sub.strip() else 0.0
+        per_blank.append(1.0 if ratio >= 0.6 else round(ratio, 2))
+    score = sum(per_blank) / len(per_blank) if per_blank else 0.0
+    return {"score": score, "detail": {"per_blank": per_blank, "expected_answers": expected}}

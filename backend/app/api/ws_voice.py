@@ -11,7 +11,7 @@ from sqlalchemy import select
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from ..db import SessionLocal
-from ..models import Conversation, ConvTurn, Setting
+from ..models import Conversation, ConvTurn, MockSection, Setting
 from ..services import personas
 from ..voice import protocol
 from ..voice.session import VoiceSession
@@ -38,8 +38,16 @@ def _load_conversation_context(conv_id: str):
         next_idx = (turns[-1].idx + 1) if turns else 0
 
         scenario_id = (conv.scenario or {}).get("id", "frei")
-        system_prompt = personas.build_system_prompt(db, scenario_id, conv.level)
-        opening_prompt = personas.opening_line_prompt(scenario_id)
+        if scenario_id == "exam":
+            # Exam speaking sections build their own examiner persona from
+            # LLM-generated part content (see examflow.py._start_speaking) —
+            # there's no scenarios.json entry to look up.
+            section = db.get(MockSection, conv.scenario["section_id"])
+            system_prompt = section.payload["system_prompt"]
+            opening_prompt = "Beginne die Prüfung jetzt."
+        else:
+            system_prompt = personas.build_system_prompt(db, scenario_id, conv.level)
+            opening_prompt = personas.opening_line_prompt(scenario_id)
 
         engine_row = db.get(Setting, "voice_engine")
         tts_engine = engine_row.value if engine_row and engine_row.value else "piper"

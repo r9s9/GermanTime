@@ -68,3 +68,31 @@ def build_system_prompt(db: Session, scenario_id: str, level: str) -> str:
 def opening_line_prompt(scenario_id: str) -> str:
     scenario = content.scenario_by_id(scenario_id) or content.scenario_by_id("frei")
     return f"Beginne das Gespräch jetzt als {scenario['role_de']} mit einer kurzen, natürlichen Begrüßung."
+
+
+_EXAM_LEVEL_GUIDANCE = {"A1": _LEVEL_GUIDANCE["A1.2"], "A2": _LEVEL_GUIDANCE["A2.2"], "B1": _LEVEL_GUIDANCE["B1.1"]}
+
+
+def exam_speaking_system_prompt(level: str, parts: list[dict]) -> str:
+    """parts: [{"teil", "instructions_de", "prompts_de", ...}] from
+    examgen.py's speaking shape, in order. One continuous conversation
+    guides the candidate through all of them — real Goethe speaking exams
+    are conducted as a single session with one examiner, not separate
+    isolated calls per part.
+    """
+    parts_text = "\n".join(
+        f"Teil {p['teil']}: {p['instructions_de']} Stichworte: {', '.join(p.get('prompts_de', []))}"
+        for p in parts
+    )
+    return (
+        f"Du bist Prüfer*in in einer mündlichen Goethe-Prüfung, Niveau {level} (GER). "
+        f"{_EXAM_LEVEL_GUIDANCE.get(level, _EXAM_LEVEL_GUIDANCE['A2'])} "
+        "Führe den Kandidaten/die Kandidatin durch die folgenden Prüfungsteile, DER REIHE NACH. "
+        "Kündige jeden neuen Teil kurz an, gib die Aufgabe, und gehe erst zum nächsten Teil über, "
+        "wenn der aktuelle abgeschlossen wirkt. Bleib sachlich und knapp wie ein echter Prüfer — "
+        "keine übertriebene Herzlichkeit, keine langen Erklärungen. Stelle passende Rückfragen, "
+        "aber führe kein normales Gespräch. Antworte NUR als Prüfer*in, keine Meta-Kommentare. "
+        "Antworte AUSSCHLIESSLICH auf Deutsch.\n\n"
+        f"Prüfungsteile:\n{parts_text}\n\n"
+        "Beginne jetzt mit einer kurzen Begrüßung und leite direkt zu Teil 1 über."
+    )
