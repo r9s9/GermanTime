@@ -10,6 +10,8 @@ type Health = {
 };
 
 type Roles = { tutor?: string; fast?: string; embed?: string };
+type Vram = { available: boolean; free_gb?: number; total_gb?: number; chatterbox_safe?: boolean; error?: string };
+type Settings = { voice_engine: "piper" | "chatterbox"; [key: string]: unknown };
 
 function Row({ label, value, ok }: { label: string; value: string; ok?: boolean }) {
   return (
@@ -27,10 +29,15 @@ export default function Einstellungen() {
   const [error, setError] = useState<string | null>(null);
   const [roles, setRoles] = useState<Roles>({});
   const [savingRole, setSavingRole] = useState<string | null>(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
+  const [vram, setVram] = useState<Vram | null>(null);
+  const [savingEngine, setSavingEngine] = useState(false);
 
   useEffect(() => {
     api<Health>("/api/health").then(setHealth).catch((e) => setError(String(e)));
     api<Roles>("/api/models/roles").then(setRoles).catch(() => {});
+    api<Settings>("/api/settings").then(setSettings).catch(() => {});
+    api<Vram>("/api/vram").then(setVram).catch(() => {});
   }, []);
 
   async function assignRole(role: "tutor" | "fast", modelId: string) {
@@ -40,6 +47,16 @@ export default function Einstellungen() {
       setRoles(updated);
     } finally {
       setSavingRole(null);
+    }
+  }
+
+  async function setVoiceEngine(engine: "piper" | "chatterbox") {
+    setSavingEngine(true);
+    try {
+      await api("/api/settings/voice_engine", { method: "PUT", json: { value: engine } });
+      setSettings((s) => (s ? { ...s, voice_engine: engine } : s));
+    } finally {
+      setSavingEngine(false);
     }
   }
 
@@ -112,6 +129,41 @@ export default function Einstellungen() {
               </select>
             </div>
           ))}
+        </section>
+      )}
+
+      {settings && (
+        <section className="card mt-4 px-6 py-4">
+          <h2 className="pb-2 pt-1 text-sm font-semibold text-mute">Sprachausgabe</h2>
+          <p className="pb-3 text-xs text-mute">
+            Piper ist die Standardstimme (schnell, CPU). Chatterbox klingt natürlicher, ist aber
+            deutlich langsamer und braucht mehr GPU-Speicher.
+          </p>
+          <div className="flex gap-2">
+            {(["piper", "chatterbox"] as const).map((engine) => (
+              <button
+                key={engine}
+                disabled={savingEngine}
+                onClick={() => setVoiceEngine(engine)}
+                className={`flex-1 rounded-xl border px-4 py-3 text-left text-sm transition-colors disabled:opacity-60 ${
+                  settings.voice_engine === engine ? "border-gold/50 bg-gold/10" : "border-line bg-white/5 hover:bg-white/10"
+                }`}
+              >
+                <div className="font-medium">{engine === "piper" ? "Piper" : "Chatterbox"}</div>
+                <div className="text-xs text-mute">{engine === "piper" ? "~100ms, empfohlen" : "~2-6s, natürlicher"}</div>
+              </button>
+            ))}
+          </div>
+          {vram?.available && (
+            <p className="mt-3 text-xs text-mute">
+              GPU-Speicher frei: {vram.free_gb} / {vram.total_gb} GB
+            </p>
+          )}
+          {vram?.available && vram.chatterbox_safe === false && settings.voice_engine !== "chatterbox" && (
+            <p className="mt-2 text-xs text-ember">
+              Wenig freier GPU-Speicher — Chatterbox könnte das Tutor-Modell verdrängen. Piper wird empfohlen.
+            </p>
+          )}
         </section>
       )}
     </div>

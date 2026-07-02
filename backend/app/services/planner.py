@@ -11,7 +11,7 @@ from datetime import date, timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from . import content, learner, srs
+from . import content, gamification, learner, srs
 from ..models import GrammarMastery, GrammarTopic, PlanBlock, PlanDay
 
 CORE_LESSON_BLOCKS = 2
@@ -140,6 +140,7 @@ def complete_block(db: Session, block_id: str, minutes_actual: float) -> PlanBlo
     day = db.get(PlanDay, block.date)
     if day:
         day.minutes_done += minutes_actual
+        was_core_done = day.core_done
         remaining_required = db.scalar(
             select(PlanBlock).where(PlanBlock.date == day.date, PlanBlock.slot == "required",
                                      PlanBlock.status != "done").limit(1)
@@ -148,6 +149,8 @@ def complete_block(db: Session, block_id: str, minutes_actual: float) -> PlanBlo
             day.core_done = True
             day.status = "done" if day.core_done else day.status
         db.commit()
+        if day.core_done and not was_core_done:
+            gamification.mark_core_done(db, day.date)
     return block
 
 

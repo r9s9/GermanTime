@@ -203,25 +203,39 @@ def unlocked_topics(db: Session) -> list[GrammarTopic]:
 
 
 def vocab_coverage(db: Session) -> dict[str, float]:
-    """Share of each Goethe wordlist level considered "known": has SRS reps
-    and isn't struggling. Wired up fully once P4 (SRS) exists; for now,
-    approximated from vocab used correctly in exercise attempts.
+    """Share of each Goethe wordlist level considered "known": has an SRS
+    card with real repetitions and current FSRS retrievability >= 0.7 (the
+    plan's own definition) — now that P4 (SRS) exists, this reads the real
+    fsrs.Card state instead of approximating from exercise attempts.
     """
-    from ..models import Exercise, ExerciseAttempt, VocabItem
+    from fsrs import Card as FsrsCard
+    from fsrs import Scheduler
+
+    from ..models import SrsCard, VocabItem
+    from .srs import _aware
 
     totals = {lvl: 0 for lvl in ("A1", "A2", "B1")}
+    levels_by_id: dict[int, str] = {}
     for v in db.scalars(select(VocabItem)):
         if v.level in totals:
             totals[v.level] += 1
+            levels_by_id[v.id] = v.level
 
-    known: dict[str, set[str]] = {"A1": set(), "A2": set(), "B1": set()}
-    rows = db.execute(
-        select(Exercise.level, Exercise.vocab_ids, ExerciseAttempt.score)
-        .join(ExerciseAttempt, ExerciseAttempt.exercise_id == Exercise.id)
-        .where(ExerciseAttempt.score >= 0.8)
-    ).all()
-    for level, vocab_ids, _score in rows:
-        if level in known:
-            known[level].update(vocab_ids or [])
+    scheduler = Scheduler()
+    now = utcnow()
+    # a word can have both de_en and en_de cards — dedupe by vocab id so a
+    # word counts as "known" once it clears the bar in either direction,
+    # not once per qualifying direction.
+    known: dict[str, set[int]] = {lvl: set() for lvl in totals}
+    cards = db.scalars(select(SrsCard).where(SrsCard.kind == "vocab", SrsCard.reps >= 2))
+    for card in cards:
+        vocab_id = int(card.ref_id)
+        level = levels_by_id.get(vocab_id)
+        if level is None:
+            continue
+        fcard = FsrsCard.from_dict(card.fsrs)
+        retrievability = scheduler.get_card_retrievability(fcard, _aware(now))
+        if retrievability >= 0.7:
+            known[level].add(vocab_id)
 
     return {lvl: (len(known[lvl]) / totals[lvl] if totals[lvl] else 0.0) for lvl in totals}

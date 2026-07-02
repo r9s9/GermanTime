@@ -12,7 +12,7 @@ from . import config
 from .api import all_routers
 from .db import SessionLocal, init_db
 from .models import Setting
-from .services import factory, stt, vad
+from .services import backup, factory, stt, vad
 from .services.pron import aligner as pron_aligner
 from .services.tts import chatterbox_engine, piper_engine
 
@@ -55,6 +55,16 @@ async def _warmup_voice_stack() -> None:
         logger.exception("voice stack warmup failed")
 
 
+async def _maybe_backup() -> None:
+    try:
+        loop = asyncio.get_event_loop()
+        path = await loop.run_in_executor(None, backup.maybe_daily_backup)
+        if path:
+            logger.info("created daily backup: %s", path.name)
+    except Exception:  # noqa: BLE001
+        logger.exception("daily backup failed")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     config.ensure_dirs()
@@ -63,9 +73,11 @@ async def lifespan(app: FastAPI):
     init_db()
     task = asyncio.create_task(_factory_loop())
     warmup_task = asyncio.create_task(_warmup_voice_stack())
+    backup_task = asyncio.create_task(_maybe_backup())
     yield
     task.cancel()
     warmup_task.cancel()
+    backup_task.cancel()
 
 
 app = FastAPI(title="GermanTime", lifespan=lifespan)

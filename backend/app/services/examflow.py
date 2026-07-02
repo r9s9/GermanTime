@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from . import content, exam_grading, examgen, grader, learner, personas, projection
+from . import content, exam_grading, examgen, gamification, grader, learner, personas, projection
 from ..models import Conversation, ConvTurn, MockExam, MockSection, Setting, UtteranceScore, utcnow
 
 MODULE_SKILL = {"lesen": "reading", "hoeren": "listening", "schreiben": "writing", "sprechen": "speaking"}
@@ -241,8 +241,15 @@ async def _maybe_complete_module(db: Session, exam: MockExam, module_name: str) 
         difficulty = learner.LEVEL_MIDPOINT.get(exam.level, 45.0)
         learner.update_skill(db, skill, scaled_score / blueprint_module["scale_to"], difficulty, weight=MODULE_WEIGHT)
 
+    module_pct = scaled_score / blueprint_module["scale_to"] * 100
+    module_xp = gamification.XP_MOCK_MODULE
+    if module_pct >= content.exam_blueprint(exam.level)["pass_pct"]:
+        module_xp += gamification.XP_MOCK_MODULE_PASS_BONUS
+    gamification.award_xp(db, "mock_module", module_xp, ref={"exam_id": exam.id, "module": module_name})
+
     if all(new_modules[mm]["status"] == "done" for mm in r["module_order"]):
         return await finish(db, exam)
+    gamification.evaluate_badges(db)
     return get_state(db, exam.id)
 
 
@@ -275,4 +282,9 @@ async def finish(db: Session, exam: MockExam) -> dict:
         "projection": proj,
     }
     db.commit()
+
+    if passed:
+        gamification.award_xp(db, "mock_full_pass", gamification.XP_MOCK_FULL_PASS, ref={"exam_id": exam.id, "level": exam.level})
+    gamification.evaluate_badges(db)
+
     return exam.results

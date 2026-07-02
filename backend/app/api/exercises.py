@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from ..db import get_db
 from ..models import Exercise, ExerciseAttempt, GrammarTopic, utcnow
-from ..services import errors, factory, grader, learner
+from ..services import errors, factory, gamification, grader, learner
 
 router = APIRouter(prefix="/api", tags=["exercises"])
 
@@ -69,4 +69,14 @@ def attempt(exercise_id: str, body: AttemptIn, db: Session = Depends(get_db)) ->
     learner.update_grammar_mastery(db, ex.topic_id, result["score"])
     errors.maybe_create_from_exercise_attempt(db, ex, body.response, result)
 
-    return {"score": result["score"], "correct": result["correct"], "detail": result["detail"]}
+    # Block completion (and the core-done/streak bonus it triggers) is
+    # handled separately by /api/plan/blocks/{id}/complete, which the
+    # frontend calls once after the *last* exercise in a set — not here,
+    # or a multi-exercise practice set would complete (and over-credit
+    # minutes for) the same block once per exercise.
+    difficulty = gamification.LEVEL_XP_MULTIPLIER.get(ex.level, 1.0)
+    xp = gamification.xp_for_exercise(result["score"], difficulty)
+    gamification.award_xp(db, "exercise", xp, ref={"exercise_id": ex.id, "type": ex.type})
+    gamification.evaluate_badges(db)
+
+    return {"score": result["score"], "correct": result["correct"], "detail": result["detail"], "xp": xp}

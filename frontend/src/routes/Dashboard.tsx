@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { GoalRing } from "../components/GoalRing";
 import { Icon } from "../components/Icon";
+import { StreakFlame } from "../components/StreakFlame";
 import { api } from "../lib/api";
 
 type Block = {
@@ -15,6 +16,10 @@ type PlanDay = { date: string; syllabus_week: number; core_done: boolean; minute
 type Projection = {
   overall_theta: number; cefr: string; projected_date: string | null; goal_date: string;
   slipping: boolean; required_minutes_per_day: number | null;
+};
+type GamifySummary = {
+  level: number; total_xp: number; xp_into_level: number; xp_for_next_level: number;
+  streak: number; freeze_bank: number; badges_earned: number;
 };
 
 function fmtDate(iso: string) {
@@ -58,11 +63,13 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [day, setDay] = useState<PlanDay | null>(null);
   const [projection, setProjection] = useState<Projection | null>(null);
+  const [gamify, setGamify] = useState<GamifySummary | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     api<PlanDay>("/api/plan/today").then(setDay).catch((e) => setError(String(e)));
     api<Projection>("/api/plan/projection").then(setProjection).catch(() => {});
+    api<GamifySummary>("/api/gamify/summary").then(setGamify).catch(() => {});
   }, []);
 
   function startBlock(block: Block) {
@@ -132,6 +139,26 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      {gamify && (
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="card flex items-center justify-between p-4">
+            <StreakFlame streak={gamify.streak} freezeBank={gamify.freeze_bank} />
+          </div>
+          <div className="card p-4 md:col-span-2">
+            <div className="mb-1.5 flex items-center justify-between text-xs text-mute">
+              <span>Level {gamify.level}</span>
+              <span>{gamify.xp_into_level}/{gamify.xp_for_next_level} XP</span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-full bg-white/5">
+              <div
+                className="h-full rounded-full bg-gold"
+                style={{ width: `${Math.min(100, (gamify.xp_into_level / gamify.xp_for_next_level) * 100)}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8">
         <h2 className="mb-2 text-sm font-semibold text-mute">Pflichtprogramm</h2>

@@ -16,7 +16,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from .. import config
 from ..db import get_db
 from ..models import PhonemeStat
-from ..services import content, learner
+from ..services import content, gamification, learner
 from ..services.pron import drills, gop
 from ..services.tts import cache as tts_cache
 
@@ -108,5 +108,8 @@ async def score_attempt(
         raise HTTPException(422, "could not score this recording — try again, closer to the microphone")
 
     words_json = gop.persist(db, ref_text, result, confidence=1.0)
+    xp = gamification.xp_for_drill(result.overall)
+    gamification.award_xp(db, "drill", xp, ref={"ref_text": ref_text})
+    gamification.evaluate_badges(db)
     db.commit()
-    return {"overall": round(result.overall, 1), "words": words_json}
+    return {"overall": round(result.overall, 1), "words": words_json, "xp": xp}

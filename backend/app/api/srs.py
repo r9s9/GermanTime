@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from ..db import get_db
 from ..models import VocabItem
-from ..services import srs
+from ..services import gamification, srs
 
 router = APIRouter(prefix="/api/srs", tags=["srs"])
 
@@ -41,6 +41,8 @@ def review(body: ReviewIn, db: Session = Depends(get_db)) -> dict:
         card = srs.review_card(db, body.card_id, body.rating, body.elapsed_ms)
     except ValueError:
         raise HTTPException(404, "card not found")
+    gamification.award_xp(db, "srs_review", gamification.XP_SRS_REVIEW, ref={"card_id": card.id})
+    gamification.evaluate_badges(db)
     return {"id": card.id, "due": card.due.isoformat(), "reps": card.reps, "lapses": card.lapses}
 
 

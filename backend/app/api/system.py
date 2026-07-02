@@ -41,3 +41,33 @@ async def health() -> dict:
 @router.get("/models")
 async def models() -> dict:
     return await server_status()
+
+
+# Chatterbox measured ~5-6GB resident (see memory: project-chatterbox-latency)
+# on top of whatever LM Studio's model + whisper/piper already hold; below
+# this much free VRAM, loading it risks OOM-evicting the LLM mid-conversation.
+CHATTERBOX_MIN_FREE_GB = 6.0
+
+
+@router.get("/vram")
+def vram() -> dict:
+    """Live GPU memory query (not model-metadata guessing) — mem_get_info()
+    reflects actual system-wide VRAM state, including whatever LM Studio's
+    own process already has resident.
+    """
+    try:
+        import torch
+
+        if not torch.cuda.is_available():
+            return {"available": False}
+        free_bytes, total_bytes = torch.cuda.mem_get_info()
+        free_gb = free_bytes / (1024 ** 3)
+        return {
+            "available": True,
+            "free_gb": round(free_gb, 1),
+            "total_gb": round(total_bytes / (1024 ** 3), 1),
+            "used_gb": round((total_bytes - free_bytes) / (1024 ** 3), 1),
+            "chatterbox_safe": free_gb >= CHATTERBOX_MIN_FREE_GB,
+        }
+    except Exception as e:  # noqa: BLE001
+        return {"available": False, "error": str(e)}

@@ -1,14 +1,14 @@
 """Conversation lifecycle: create (with scenario), fetch transcript, end."""
 
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..db import get_db
 from ..models import Conversation, ConvTurn, utcnow
-from ..services import content, learner, planner
+from ..services import content, gamification, learner, planner
 
 router = APIRouter(prefix="/api/conversations", tags=["conversations"])
 
@@ -69,6 +69,11 @@ def end_conversation(conv_id: str, body: EndIn, db: Session = Depends(get_db)) -
         conv.ended_at = utcnow()
         conv.minutes = round((conv.ended_at - conv.started_at).total_seconds() / 60, 1)
         db.commit()
+
+        turns = db.scalar(select(func.count()).select_from(ConvTurn).where(ConvTurn.conv_id == conv_id)) or 0
+        xp = gamification.xp_for_conversation(conv.minutes, turns)
+        gamification.award_xp(db, "conversation", xp, ref={"conv_id": conv.id, "turns": turns})
+        gamification.evaluate_badges(db)
 
     if body.block_id:
         planner.complete_block(db, body.block_id, max(conv.minutes, 1.0))

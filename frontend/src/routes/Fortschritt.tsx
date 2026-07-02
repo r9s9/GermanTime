@@ -3,7 +3,9 @@ import {
   PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer,
 } from "recharts";
 
+import { BadgeGrid } from "../components/BadgeGrid";
 import { PronProfile } from "../components/PronProfile";
+import { WeeklyReportCard } from "../components/WeeklyReportCard";
 import { api } from "../lib/api";
 import { SKILL_LABELS, SKILL_ORDER } from "../lib/skills";
 
@@ -103,6 +105,11 @@ export default function Fortschritt() {
           </div>
         </div>
       )}
+
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <WeeklyReportCard />
+        <BadgeGrid />
+      </div>
 
       <div className="mt-6">
         <h2 className="mb-3 text-sm font-semibold text-mute">Aussprache</h2>
