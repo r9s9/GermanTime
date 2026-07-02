@@ -65,6 +65,7 @@ class VocabItem(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     lemma: Mapped[str] = mapped_column(String, index=True)
     article: Mapped[str | None] = mapped_column(String, default=None)  # der|die|das for nouns
+    plural: Mapped[str | None] = mapped_column(String, default=None)  # full plural form for nouns
     pos: Mapped[str] = mapped_column(String)  # noun|verb|adj|adv|prep|conj|pron|num|phrase|other
     level: Mapped[str] = mapped_column(String, index=True)  # A1|A2|B1
     freq_rank: Mapped[int] = mapped_column(Integer, default=0)

@@ -1,0 +1,24 @@
+{
+  "badges": [
+    { "id": "erster_schritt", "de": "Erster Schritt", "en": "First Step", "desc_de": "Erste Lektion abgeschlossen", "desc_en": "Completed your first lesson", "icon": "sparkle", "criteria": { "type": "lessons_done", "n": 1 } },
+    { "id": "stimme_gefunden", "de": "Stimme gefunden", "en": "Found Your Voice", "desc_de": "Erstes Gespräch mit dem Tutor geführt", "desc_en": "First voice conversation", "icon": "mic", "criteria": { "type": "conversations_done", "n": 1 } },
+    { "id": "flamme_7", "de": "Flamme 7", "en": "Flame 7", "desc_de": "7 Tage am Stück gelernt", "desc_en": "7-day streak", "icon": "flame", "criteria": { "type": "streak", "n": 7 } },
+    { "id": "flamme_30", "de": "Flamme 30", "en": "Flame 30", "desc_de": "30 Tage am Stück gelernt", "desc_en": "30-day streak", "icon": "flame", "criteria": { "type": "streak", "n": 30 } },
+    { "id": "flamme_100", "de": "Flamme 100", "en": "Flame 100", "desc_de": "100 Tage am Stück gelernt", "desc_en": "100-day streak", "icon": "flame", "criteria": { "type": "streak", "n": 100 } },
+    { "id": "flamme_180", "de": "Flamme 180", "en": "Flame 180", "desc_de": "180 Tage – das volle Programm!", "desc_en": "180-day streak", "icon": "flame", "criteria": { "type": "streak", "n": 180 } },
+    { "id": "wortschatz_100", "de": "Wortschatz 100", "en": "Vocabulary 100", "desc_de": "100 Wörter gelernt", "desc_en": "100 words learned", "icon": "book", "criteria": { "type": "words_known", "n": 100 } },
+    { "id": "wortschatz_500", "de": "Wortschatz 500", "en": "Vocabulary 500", "desc_de": "500 Wörter gelernt", "desc_en": "500 words learned", "icon": "book", "criteria": { "type": "words_known", "n": 500 } },
+    { "id": "wortschatz_1000", "de": "Wortschatz 1000", "en": "Vocabulary 1000", "desc_de": "1000 Wörter gelernt", "desc_en": "1000 words learned", "icon": "book", "criteria": { "type": "words_known", "n": 1000 } },
+    { "id": "wortschatz_2000", "de": "Wortschatz 2000", "en": "Vocabulary 2000", "desc_de": "2000 Wörter – B1-Niveau!", "desc_en": "2000 words learned", "icon": "book", "criteria": { "type": "words_known", "n": 2000 } },
+    { "id": "grammatik_handwerker", "de": "Grammatik-Handwerker", "en": "Grammar Craftsman", "desc_de": "10 Grammatikthemen gemeistert", "desc_en": "10 grammar topics mastered", "icon": "pen", "criteria": { "type": "grammar_mastered", "n": 10 } },
+    { "id": "satzbaumeister", "de": "Satzbaumeister", "en": "Sentence Master", "desc_de": "30 Grammatikthemen gemeistert", "desc_en": "30 grammar topics mastered", "icon": "pen", "criteria": { "type": "grammar_mastered", "n": 30 } },
+    { "id": "ue_meister", "de": "Ü-Meister", "en": "Umlaut Master", "desc_de": "Einen schwachen Laut von unter 60 auf über 80 verbessert", "desc_en": "Improved a weak phoneme from <60 to >80", "icon": "volume", "criteria": { "type": "phoneme_improved", "from": 60, "to": 80 } },
+    { "id": "zungenbrecher", "de": "Zungenbrecher", "en": "Tongue Twister", "desc_de": "10 Aussprache-Übungen mit über 85 Punkten", "desc_en": "10 pronunciation drills above 85", "icon": "volume", "criteria": { "type": "drills_above", "score": 85, "n": 10 } },
+    { "id": "plaudertasche", "de": "Plaudertasche", "en": "Chatterbox", "desc_de": "100 Minuten Deutsch gesprochen", "desc_en": "100 minutes of conversation", "icon": "mic", "criteria": { "type": "conversation_minutes", "n": 100 } },
+    { "id": "pruefungsreif_a1", "de": "Prüfungsreif A1", "en": "Exam-ready A1", "desc_de": "A1-Probeprüfung bestanden", "desc_en": "Passed an A1 mock exam", "icon": "exam", "criteria": { "type": "mock_passed", "level": "A1" } },
+    { "id": "pruefungsreif_a2", "de": "Prüfungsreif A2", "en": "Exam-ready A2", "desc_de": "A2-Probeprüfung bestanden", "desc_en": "Passed an A2 mock exam", "icon": "exam", "criteria": { "type": "mock_passed", "level": "A2" } },
+    { "id": "pruefungsreif_b1", "de": "Prüfungsreif B1", "en": "Exam-ready B1", "desc_de": "B1-Probeprüfung bestanden – das große Ziel!", "desc_en": "Passed a B1 mock exam", "icon": "exam", "criteria": { "type": "mock_passed", "level": "B1" } },
+    { "id": "souveraen", "de": "Souverän", "en": "Confident", "desc_de": "Eine Probeprüfung mit über 80 % bestanden", "desc_en": "Scored above 80% on a mock exam", "icon": "sparkle", "criteria": { "type": "mock_score_above", "pct": 80 } },
+    { "id": "comeback", "de": "Comeback", "en": "Comeback", "desc_de": "Nach einer Pause von 7+ Tagen wieder 7 Tage am Stück", "desc_en": "Rebuilt a 7-day streak after a 7+ day break", "icon": "flame", "criteria": { "type": "comeback", "gap": 7, "streak": 7 } }
+  ]
+}

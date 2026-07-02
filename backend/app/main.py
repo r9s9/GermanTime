@@ -8,12 +8,14 @@ from fastapi.staticfiles import StaticFiles
 
 from . import config
 from .api import all_routers
+from .db import init_db
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     config.ensure_dirs()
     config.wire_dlls()
+    init_db()
     yield
 
 

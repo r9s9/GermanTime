@@ -8,11 +8,12 @@ __pycache__/
 frontend/node_modules/
 frontend/dist/
 
-# Runtime data (user progress, audio, caches, backups)
-data/
+# Runtime data (user progress, audio, caches, backups) — root-anchored so this
+# does NOT catch backend/app/data/ (seed content, must be committed)
+/data/
 
 # Downloaded ML models / voices / HF cache
-models/
+/models/
 
 # Misc
 *.log

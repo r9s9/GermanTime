@@ -1,0 +1,189 @@
+lemma,article,plural,pos,en_gloss,tags
+die Reise,die,Reisen,noun,trip,reisen
+reisen,,,verb,to travel,reisen
+der Urlaub,der,Urlaube,noun,vacation,reisen
+das Flugzeug,das,Flugzeuge,noun,airplane,reisen
+der Flughafen,der,Flughäfen,noun,airport,reisen
+fliegen,,,verb,to fly,reisen
+der Zug,der,Züge,noun,train,reisen
+das Gleis,das,Gleise,noun,platform (rail),reisen
+der Fahrplan,der,Fahrpläne,noun,timetable,reisen
+die Fahrkarte,die,Fahrkarten,noun,ticket,reisen
+das Gepäck,das,,noun,luggage,reisen
+der Koffer,der,Koffer,noun,suitcase,reisen
+ankommen,,,verb,to arrive,reisen
+abfahren,,,verb,to depart,reisen
+buchen,,,verb,to book,reisen
+das Hotel,das,Hotels,noun,hotel,reisen
+übernachten,,,verb,to stay overnight,reisen
+die Grenze,die,Grenzen,noun,border,reisen
+verpassen,,,verb,to miss (e.g. a train),reisen
+umsteigen,,,verb,to change/transfer,verkehr
+die Verspätung,die,Verspätungen,noun,delay,verkehr
+das Ticket,das,Tickets,noun,ticket,verkehr
+der Schaffner,der,Schaffner,noun,conductor,verkehr
+die Praxis,die,Praxen,noun,doctor's practice,gesundheit
+der Termin,der,Termine,noun,appointment,gesundheit
+die Schmerzen,die,,noun,pain,gesundheit
+weh tun,,,verb,to hurt,gesundheit
+der Husten,der,,noun,cough,gesundheit
+das Fieber,das,,noun,fever,gesundheit
+die Erkältung,die,Erkältungen,noun,cold (illness),gesundheit
+die Apotheke,die,Apotheken,noun,pharmacy,gesundheit
+das Medikament,das,Medikamente,noun,medication,gesundheit
+die Tablette,die,Tabletten,noun,pill,gesundheit
+sich erholen,,,verb,to recover,gesundheit
+untersuchen,,,verb,to examine,gesundheit
+der Rücken,der,Rücken,noun,back,koerper
+der Hals,der,Hälse,noun,throat/neck,koerper
+die Nase,die,Nasen,noun,nose,koerper
+der Mund,der,Münder,noun,mouth,koerper
+der Zahn,der,Zähne,noun,tooth,koerper
+gesund leben,,,phrase,to live healthily,gesundheit
+sich fühlen,,,verb,to feel,gesundheit
+sich ausruhen,,,verb,to rest,gesundheit
+raten,,,verb,to advise,gesundheit
+empfehlen,,,verb,to recommend,gesundheit
+die Nachbarschaft,die,Nachbarschaften,noun,neighbourhood,nachbarschaft
+der Nachbar,der,Nachbarn,noun,neighbour,nachbarschaft
+der Vermieter,der,Vermieter,noun,landlord,wohnen
+die Vermieterin,die,Vermieterinnen,noun,landlady,wohnen
+umziehen,,,verb,to move house,wohnen
+der Umzug,der,Umzüge,noun,house move,wohnen
+der Balkon,der,Balkone,noun,balcony,wohnen
+der Garten,der,Gärten,noun,garden,wohnen
+der Keller,der,Keller,noun,cellar,wohnen
+der Aufzug,der,Aufzüge,noun,elevator,wohnen
+laut,,,adj,loud,nachbarschaft
+leise,,,adj,quiet,nachbarschaft
+stören,,,verb,to disturb,nachbarschaft
+sich beschweren,,,verb,to complain,nachbarschaft
+die Ruhe,die,,noun,quiet/peace,nachbarschaft
+sich setzen,,,verb,to sit down,alltag
+sich freuen,,,verb,to be happy,gefuehle
+sich ärgern,,,verb,to be annoyed,gefuehle
+sich interessieren,,,verb,to be interested,alltag
+sich waschen,,,verb,to wash oneself,alltag
+sich anziehen,,,verb,to get dressed,alltag
+sich vorstellen,,,verb,to introduce oneself,person
+sich treffen,,,verb,to meet,alltag
+sich verabreden,,,verb,to arrange to meet,alltag
+das Produkt,das,Produkte,noun,product,einkaufen
+vergleichen,,,verb,to compare,einkaufen
+umtauschen,,,verb,to exchange (goods),einkaufen
+die Größe,die,Größen,noun,size,kleidung
+die Qualität,die,Qualitäten,noun,quality,einkaufen
+die Reklamation,die,Reklamationen,noun,complaint,einkaufen
+der Kassenzettel,der,Kassenzettel,noun,receipt,einkaufen
+anprobieren,,,verb,to try on,kleidung
+passen,,,verb,to fit,kleidung
+der Rabatt,der,Rabatte,noun,discount,einkaufen
+das Angebot,das,Angebote,noun,offer,einkaufen
+größer,,,adj,bigger,einkaufen
+kleiner,,,adj,smaller,einkaufen
+besser,,,adj,better,einkaufen
+schlechter,,,adj,worse,einkaufen
+am besten,,,adv,best,einkaufen
+die Ausbildung,die,Ausbildungen,noun,vocational training,schule
+die Schule,die,Schulen,noun,school,schule
+die Universität,die,Universitäten,noun,university,schule
+der Kurs,der,Kurse,noun,course,schule
+die Prüfung,die,Prüfungen,noun,exam,schule
+die Note,die,Noten,noun,grade,schule
+das Zeugnis,das,Zeugnisse,noun,report card,schule
+die Bewerbung,die,Bewerbungen,noun,application,beruf
+sich bewerben,,,verb,to apply,beruf
+der Lebenslauf,der,Lebensläufe,noun,CV,beruf
+das Vorstellungsgespräch,das,Vorstellungsgespräche,noun,job interview,beruf
+die Erfahrung,die,Erfahrungen,noun,experience,beruf
+die Fähigkeit,die,Fähigkeiten,noun,skill,beruf
+der Kollege,der,Kollegen,noun,colleague (m),beruf
+die Kollegin,die,Kolleginnen,noun,colleague (f),beruf
+der Chef,der,Chefs,noun,boss (m),beruf
+die Chefin,die,Chefinnen,noun,boss (f),beruf
+die Besprechung,die,Besprechungen,noun,meeting,beruf
+weil,,,conj,because,funktionswoerter
+dass,,,conj,that,funktionswoerter
+deshalb,,,adv,therefore,funktionswoerter
+trotzdem,,,adv,nevertheless,funktionswoerter
+obwohl,,,conj,although,funktionswoerter
+das Fest,das,Feste,noun,celebration,feste
+der Geburtstag,der,Geburtstage,noun,birthday,feste
+die Einladung,die,Einladungen,noun,invitation,feste
+einladen,,,verb,to invite,feste
+feiern,,,verb,to celebrate,feste
+das Geschenk,das,Geschenke,noun,gift,feste
+gratulieren,,,verb,to congratulate,feste
+Weihnachten,das,,noun,Christmas,feste
+Ostern,das,,noun,Easter,feste
+die Party,die,Partys,noun,party,feste
+die Tradition,die,Traditionen,noun,tradition,feste
+absagen,,,verb,to cancel,feste
+zusagen,,,verb,to accept (invitation),feste
+das Handy,das,Handys,noun,mobile phone,medien
+das Internet,das,,noun,internet,medien
+die E-Mail,die,E-Mails,noun,email,medien
+die Nachricht,die,Nachrichten,noun,message/news,medien
+anrufen,,,verb,to call (phone),medien
+schicken,,,verb,to send,medien
+herunterladen,,,verb,to download,technik
+die App,die,Apps,noun,app,technik
+das Passwort,das,Passwörter,noun,password,technik
+der Computer,der,Computer,noun,computer,technik
+speichern,,,verb,to save (file),technik
+die Website,die,Websites,noun,website,technik
+sozial,,,adj,social,medien
+die Zeitung,die,Zeitungen,noun,newspaper,medien
+der Artikel,der,Artikel,noun,article,medien
+die Werbung,die,Werbungen,noun,advertisement,medien
+der Regenschirm,der,Regenschirme,noun,umbrella,wetter
+die Wolke,die,Wolken,noun,cloud,wetter
+der Wind,der,Winde,noun,wind,wetter
+der Schnee,der,,noun,snow,wetter
+schneien,,,verb,to snow,wetter
+der Frühling,der,Frühlinge,noun,spring,wetter
+der Sommer,der,Sommer,noun,summer,wetter
+der Herbst,der,Herbste,noun,autumn,wetter
+der Winter,der,Winter,noun,winter,wetter
+die Jahreszeit,die,Jahreszeiten,noun,season,wetter
+die Umwelt,die,,noun,environment,umwelt
+der Müll,der,,noun,waste/rubbish,umwelt
+trennen,,,verb,to separate (waste),umwelt
+recyceln,,,verb,to recycle,umwelt
+sparen,,,verb,to save (money/energy),umwelt
+die Energie,die,Energien,noun,energy,umwelt
+die Zukunft,die,,noun,future,zukunft
+planen,,,verb,to plan,zukunft
+der Plan,der,Pläne,noun,plan,zukunft
+vorhaben,,,verb,to intend,zukunft
+hoffen,,,verb,to hope,zukunft
+der Traum,der,Träume,noun,dream,zukunft
+träumen,,,verb,to dream,zukunft
+erreichen,,,verb,to achieve,zukunft
+das Ziel,das,Ziele,noun,goal,zukunft
+werden,,,verb,to become,zukunft
+mehr,,,adv,more,alltag
+weniger,,,adv,less,alltag
+zusammen,,,adv,together,alltag
+allein,,,adv,alone,alltag
+gemeinsam,,,adj,shared/together,alltag
+verschieden,,,adj,different,alltag
+gleich,,,adj,same,alltag
+wichtig,,,adj,important,alltag
+möglich,,,adj,possible,alltag
+leicht,,,adj,easy,alltag
+schwierig,,,adj,difficult,alltag
+schnell,,,adj,fast,alltag
+langsam,,,adj,slow,alltag
+früh,,,adj,early,alltag
+spät,,,adj,late,alltag
+genug,,,adv,enough,alltag
+ungefähr,,,adv,approximately,alltag
+zeigen,,,verb,to show,alltag
+erklären,,,verb,to explain,alltag
+verstehen,,,verb,to understand,alltag
+vergessen,,,verb,to forget,alltag
+sich erinnern,,,verb,to remember,alltag
+entscheiden,,,verb,to decide,alltag
+die Entscheidung,die,Entscheidungen,noun,decision,alltag
+der Grund,der,Gründe,noun,reason,alltag

@@ -1,0 +1,48 @@
+{
+  "level": "B1",
+  "name": "Goethe-Zertifikat B1 (Zertifikat B1)",
+  "pass_pct": 60,
+  "scoring": "modular",
+  "modules": {
+    "lesen": {
+      "time_min": 65,
+      "scale_to": 100,
+      "parts": [
+        { "teil": 1, "items": 6, "kind": "truefalse", "spec": "Blog/privater Text (~230 Wörter). Aussagen richtig/falsch." },
+        { "teil": 2, "items": 6, "kind": "mc3", "spec": "Zwei Presseartikel (~180 Wörter je). Je 3 Fragen mit 3 Optionen." },
+        { "teil": 3, "items": 7, "kind": "match", "options": 10, "spec": "7 Situationen + 10 Anzeigen (a-j), eine Situation ohne passende Anzeige (x)." },
+        { "teil": 4, "items": 7, "kind": "yesno", "spec": "Leserbriefe/Meinungen (~40 Wörter je): Ist die Person dafür (ja) oder dagegen (nein)?" },
+        { "teil": 5, "items": 4, "kind": "mc3", "spec": "Ordnung/Anleitung (z. B. Hausordnung). 4 Fragen mit 3 Optionen." }
+      ]
+    },
+    "hoeren": {
+      "time_min": 40,
+      "scale_to": 100,
+      "parts": [
+        { "teil": 1, "items": 10, "kind": "mixed_tf_mc", "plays": 2, "spec": "5 kurze Texte (Ansage, Nachricht, Radio), je 1 richtig/falsch + 1 MC-Frage." },
+        { "teil": 2, "items": 5, "kind": "mc3", "plays": 1, "spec": "Führung/Vortrag (Monolog). 5 MC-Fragen." },
+        { "teil": 3, "items": 7, "kind": "truefalse", "plays": 1, "spec": "Alltagsgespräch zwischen zwei Personen. 7 Aussagen richtig/falsch." },
+        { "teil": 4, "items": 8, "kind": "speaker_match", "plays": 2, "spec": "Radiodiskussion mit 3 Sprechern. Wer sagt das? (Moderator/Person A/Person B)." }
+      ]
+    },
+    "schreiben": {
+      "time_min": 60,
+      "scale_to": 100,
+      "parts": [
+        { "teil": 1, "items": 1, "kind": "text", "points": 40, "words": 80, "content_points": 3, "spec": "Informelle E-Mail an Freund*in (z. B. Erlebnis erzählen, einladen, absagen) mit 3 Leitpunkten." },
+        { "teil": 2, "items": 1, "kind": "text", "points": 40, "words": 80, "content_points": 1, "spec": "Forumsbeitrag: eigene Meinung zu einem Diskussionsthema begründen." },
+        { "teil": 3, "items": 1, "kind": "text", "points": 20, "words": 40, "content_points": 1, "spec": "Halbformelle/formelle E-Mail (z. B. an Lehrer, Vermieterin): höflich absagen/bitten." }
+      ]
+    },
+    "sprechen": {
+      "time_min": 15,
+      "scale_to": 100,
+      "parts": [
+        { "teil": 1, "items": 1, "kind": "planning", "points": 28, "spec": "Gemeinsam etwas planen (~3 Min., z. B. Überraschungsparty, Ausflug) — mit dem Prüfer-Tutor als Partner." },
+        { "teil": 2, "items": 1, "kind": "presentation", "points": 40, "spec": "Präsentation (~3 Min.) zu einem Alltagsthema mit 5 Folien-Struktur: Einleitung, Situation im Heimatland, Pro & Contra, Meinung, Abschluss." },
+        { "teil": 3, "items": 1, "kind": "feedback_qa", "points": 16, "spec": "Feedback zur Präsentation geben und auf Fragen antworten." }
+      ],
+      "extra_points": { "aussprache": 16 }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "level": "A1",
+  "name": "Start Deutsch 1",
+  "pass_pct": 60,
+  "scoring": "total",
+  "modules": {
+    "hoeren": {
+      "time_min": 25,
+      "scale_to": 25,
+      "parts": [
+        { "teil": 1, "items": 6, "kind": "mc3", "plays": 2, "spec": "Kurze Alltagsgespräche (je 2-3 Sätze Dialog). Frage + 3 Optionen (a/b/c). Themen: Uhrzeit, Preise, Orte, Zahlen." },
+        { "teil": 2, "items": 4, "kind": "truefalse", "plays": 1, "spec": "Öffentliche Durchsagen (Bahnhof, Flughafen, Supermarkt). Aussage richtig/falsch." },
+        { "teil": 3, "items": 5, "kind": "mc3", "plays": 2, "spec": "Ansagen am Telefon / Anrufbeantworter. Frage + 3 Optionen." }
+      ]
+    },
+    "lesen": {
+      "time_min": 25,
+      "scale_to": 25,
+      "parts": [
+        { "teil": 1, "items": 5, "kind": "truefalse", "spec": "Zwei kurze private Texte (E-Mail, Notiz). Aussagen richtig/falsch." },
+        { "teil": 2, "items": 5, "kind": "match2", "spec": "Situationen + je 2 Kleinanzeigen/Webseiten (a/b). Welche passt?" },
+        { "teil": 3, "items": 5, "kind": "truefalse", "spec": "Schilder und Hinweise (Aushang, Zettel). Aussage richtig/falsch." }
+      ]
+    },
+    "schreiben": {
+      "time_min": 20,
+      "scale_to": 25,
+      "parts": [
+        { "teil": 1, "items": 5, "kind": "form", "points": 5, "spec": "Formular ausfüllen (5 Lücken) auf Basis einer Situationsbeschreibung (z. B. Anmeldung, Bestellung)." },
+        { "teil": 2, "items": 1, "kind": "text", "points": 10, "words": 30, "content_points": 3, "spec": "Kurze Mitteilung (E-Mail/Karte) mit 3 Inhaltspunkten." }
+      ]
+    },
+    "sprechen": {
+      "time_min": 15,
+      "scale_to": 25,
+      "parts": [
+        { "teil": 1, "items": 1, "kind": "monolog", "points": 3, "spec": "Sich vorstellen: Name, Alter, Land, Wohnort, Sprachen, Beruf, Hobby. Danach buchstabieren + eine Zahl nennen." },
+        { "teil": 2, "items": 4, "kind": "qa_cards", "points": 6, "spec": "Frage-Antwort zu Themenkarten (z. B. Essen, Wohnung): 2× Frage stellen, 2× antworten." },
+        { "teil": 3, "items": 2, "kind": "requests", "points": 6, "spec": "Bitten formulieren und darauf reagieren (Kartenaufgaben, z. B. 'Fenster öffnen')." }
+      ]
+    }
+  }
+}

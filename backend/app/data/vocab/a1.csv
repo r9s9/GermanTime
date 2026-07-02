@@ -1,0 +1,309 @@
+lemma,article,plural,pos,en_gloss,tags
+ich,,,pron,I,funktionswoerter
+du,,,pron,you (informal),funktionswoerter
+er,,,pron,he,funktionswoerter
+sie,,,pron,she,funktionswoerter
+es,,,pron,it,funktionswoerter
+wir,,,pron,we,funktionswoerter
+ihr,,,pron,you (plural),funktionswoerter
+Sie,,,pron,you (formal),funktionswoerter
+mein,,,pron,my,funktionswoerter
+dein,,,pron,your,funktionswoerter
+sein,,,pron,his,funktionswoerter
+ihr,,,pron,her,funktionswoerter
+unser,,,pron,our,funktionswoerter
+wer,,,pron,who,funktionswoerter
+was,,,pron,what,funktionswoerter
+wo,,,adv,where,funktionswoerter
+wann,,,adv,when,funktionswoerter
+warum,,,adv,why,funktionswoerter
+wie,,,adv,how,funktionswoerter
+welche,,,pron,which,funktionswoerter
+und,,,conj,and,funktionswoerter
+oder,,,conj,or,funktionswoerter
+aber,,,conj,but,funktionswoerter
+denn,,,conj,because,funktionswoerter
+nicht,,,adv,not,funktionswoerter
+kein,,,pron,no/not a,funktionswoerter
+ja,,,adv,yes,funktionswoerter
+nein,,,adv,no,funktionswoerter
+bitte,,,adv,please,begruessung
+danke,,,adv,thank you,begruessung
+hallo,,,phrase,hello,begruessung
+tschüss,,,phrase,bye,begruessung
+"Guten Morgen",,,phrase,good morning,begruessung
+"Guten Tag",,,phrase,hello (formal),begruessung
+"Guten Abend",,,phrase,good evening,begruessung
+"Auf Wiedersehen",,,phrase,goodbye (formal),begruessung
+"Wie geht's?",,,phrase,how are you?,begruessung
+Entschuldigung,die,Entschuldigungen,noun,excuse me / sorry,begruessung
+der Name,der,Namen,noun,name,person
+heißen,,,verb,to be called,person
+kommen,,,verb,to come,person
+wohnen,,,verb,to live (reside),wohnen
+sein,,,verb,to be,funktionswoerter
+haben,,,verb,to have,funktionswoerter
+sprechen,,,verb,to speak,person
+verstehen,,,verb,to understand,person
+das Land,das,Länder,noun,country,laender
+Deutschland,,,noun,Germany,laender
+Österreich,,,noun,Austria,laender
+"die Schweiz",die,,noun,Switzerland,laender
+England,,,noun,England,laender
+der Iran,der,,noun,Iran,laender
+die Sprache,die,Sprachen,noun,language,laender
+Deutsch,,,noun,German (language),laender
+Englisch,,,noun,English (language),laender
+Persisch,,,noun,Persian (language),laender
+die Familie,die,Familien,noun,family,familie
+die Mutter,die,Mütter,noun,mother,familie
+der Vater,der,Väter,noun,father,familie
+die Eltern,die,,noun,parents,familie
+das Kind,das,Kinder,noun,child,familie
+der Sohn,der,Söhne,noun,son,familie
+die Tochter,die,Töchter,noun,daughter,familie
+der Bruder,der,Brüder,noun,brother,familie
+die Schwester,die,Schwestern,noun,sister,familie
+die Frau,die,Frauen,noun,woman / wife,person
+der Mann,der,Männer,noun,man / husband,person
+der Freund,der,Freunde,noun,friend (m),person
+die Freundin,die,Freundinnen,noun,friend (f),person
+verheiratet,,,adj,married,familie
+ledig,,,adj,single,familie
+alt,,,adj,old,person
+jung,,,adj,young,person
+das Jahr,das,Jahre,noun,year,zeit
+alt sein,,,phrase,to be … years old,person
+der Beruf,der,Berufe,noun,profession,beruf
+arbeiten,,,verb,to work,beruf
+der Student,der,Studenten,noun,student (m),beruf
+die Studentin,die,Studentinnen,noun,student (f),beruf
+der Lehrer,der,Lehrer,noun,teacher (m),beruf
+die Lehrerin,die,Lehrerinnen,noun,teacher (f),beruf
+der Arzt,der,Ärzte,noun,doctor (m),beruf
+die Ärztin,die,Ärztinnen,noun,doctor (f),beruf
+das Büro,das,Büros,noun,office,buero
+die Firma,die,Firmen,noun,company,buero
+studieren,,,verb,to study,beruf
+lernen,,,verb,to learn,beruf
+das Essen,das,,noun,food,essen
+trinken,,,verb,to drink,essen
+essen,,,verb,to eat,essen
+das Brot,das,Brote,noun,bread,essen
+das Wasser,das,,noun,water,essen
+der Kaffee,der,,noun,coffee,essen
+der Tee,der,,noun,tea,essen
+die Milch,die,,noun,milk,essen
+der Saft,der,Säfte,noun,juice,essen
+der Apfel,der,Äpfel,noun,apple,essen
+die Banane,die,Bananen,noun,banana,essen
+das Gemüse,das,,noun,vegetables,essen
+der Reis,der,,noun,rice,essen
+das Fleisch,das,,noun,meat,essen
+der Fisch,der,Fische,noun,fish,essen
+der Käse,der,,noun,cheese,essen
+das Ei,das,Eier,noun,egg,essen
+der Zucker,der,,noun,sugar,essen
+das Salz,das,,noun,salt,essen
+das Restaurant,das,Restaurants,noun,restaurant,essen
+die Speisekarte,die,Speisekarten,noun,menu,essen
+bestellen,,,verb,to order,essen
+bezahlen,,,verb,to pay,einkaufen
+lecker,,,adj,tasty,essen
+der Supermarkt,der,Supermärkte,noun,supermarket,einkaufen
+kaufen,,,verb,to buy,einkaufen
+das Geld,das,,noun,money,einkaufen
+der Euro,der,Euro,noun,euro,einkaufen
+kosten,,,verb,to cost,einkaufen
+der Preis,der,Preise,noun,price,einkaufen
+billig,,,adj,cheap,einkaufen
+teuer,,,adj,expensive,einkaufen
+das Geschäft,das,Geschäfte,noun,shop,einkaufen
+suchen,,,verb,to look for,einkaufen
+finden,,,verb,to find,einkaufen
+brauchen,,,verb,to need,einkaufen
+die Wohnung,die,Wohnungen,noun,apartment,wohnen
+das Haus,das,Häuser,noun,house,wohnen
+das Zimmer,das,Zimmer,noun,room,wohnen
+die Küche,die,Küchen,noun,kitchen,moebel
+das Bad,das,Bäder,noun,bathroom,moebel
+das Schlafzimmer,das,Schlafzimmer,noun,bedroom,moebel
+das Wohnzimmer,das,Wohnzimmer,noun,living room,moebel
+der Tisch,der,Tische,noun,table,moebel
+der Stuhl,der,Stühle,noun,chair,moebel
+das Bett,das,Betten,noun,bed,moebel
+der Schrank,der,Schränke,noun,cupboard,moebel
+das Fenster,das,Fenster,noun,window,moebel
+die Tür,die,Türen,noun,door,moebel
+die Miete,die,Mieten,noun,rent,wohnen
+groß,,,adj,big,wohnen
+klein,,,adj,small,wohnen
+neu,,,adj,new,wohnen
+alt,,,adj,old,wohnen
+schön,,,adj,beautiful,wohnen
+hell,,,adj,bright,wohnen
+dunkel,,,adj,dark,wohnen
+die Uhr,die,Uhren,noun,clock,zeit
+die Uhrzeit,die,Uhrzeiten,noun,time,zeit
+die Stunde,die,Stunden,noun,hour,zeit
+die Minute,die,Minuten,noun,minute,zeit
+der Tag,der,Tage,noun,day,zeit
+die Woche,die,Wochen,noun,week,zeit
+der Monat,der,Monate,noun,month,zeit
+heute,,,adv,today,zeit
+morgen,,,adv,tomorrow,zeit
+gestern,,,adv,yesterday,zeit
+jetzt,,,adv,now,zeit
+Montag,der,,noun,Monday,zeit
+Dienstag,der,,noun,Tuesday,zeit
+Mittwoch,der,,noun,Wednesday,zeit
+Donnerstag,der,,noun,Thursday,zeit
+Freitag,der,,noun,Friday,zeit
+Samstag,der,,noun,Saturday,zeit
+Sonntag,der,,noun,Sunday,zeit
+aufstehen,,,verb,to get up,alltag
+frühstücken,,,verb,to have breakfast,alltag
+anfangen,,,verb,to begin,alltag
+aufhören,,,verb,to stop,alltag
+schlafen,,,verb,to sleep,alltag
+duschen,,,verb,to shower,alltag
+der Alltag,der,,noun,everyday life,alltag
+der Termin,der,Termine,noun,appointment,alltag
+null,,,num,zero,zahlen_zeit
+eins,,,num,one,zahlen_zeit
+zwei,,,num,two,zahlen_zeit
+drei,,,num,three,zahlen_zeit
+vier,,,num,four,zahlen_zeit
+fünf,,,num,five,zahlen_zeit
+sechs,,,num,six,zahlen_zeit
+sieben,,,num,seven,zahlen_zeit
+acht,,,num,eight,zahlen_zeit
+neun,,,num,nine,zahlen_zeit
+zehn,,,num,ten,zahlen_zeit
+elf,,,num,eleven,zahlen_zeit
+zwölf,,,num,twelve,zahlen_zeit
+zwanzig,,,num,twenty,zahlen_zeit
+dreißig,,,num,thirty,zahlen_zeit
+hundert,,,num,hundred,zahlen_zeit
+das Hobby,das,Hobbys,noun,hobby,freizeit
+lesen,,,verb,to read,freizeit
+schreiben,,,verb,to write,freizeit
+sehen,,,verb,to see,freizeit
+hören,,,verb,to hear,freizeit
+spielen,,,verb,to play,freizeit
+schwimmen,,,verb,to swim,sport
+laufen,,,verb,to run/walk,sport
+tanzen,,,verb,to dance,freizeit
+singen,,,verb,to sing,freizeit
+kochen,,,verb,to cook,freizeit
+reisen,,,verb,to travel,freizeit
+der Sport,der,,noun,sport,sport
+das Fußball,der,,noun,football,sport
+das Buch,das,Bücher,noun,book,freizeit
+der Film,der,Filme,noun,film,freizeit
+die Musik,die,,noun,music,freizeit
+mögen,,,verb,to like,freizeit
+gern,,,adv,gladly (like doing),freizeit
+können,,,verb,can / to be able to,freizeit
+müssen,,,verb,must / to have to,freizeit
+möchten,,,verb,would like to,freizeit
+wollen,,,verb,to want,freizeit
+das Wetter,das,,noun,weather,wetter
+die Sonne,die,,noun,sun,wetter
+der Regen,der,,noun,rain,wetter
+warm,,,adj,warm,wetter
+kalt,,,adj,cold,wetter
+die Stadt,die,Städte,noun,city,stadt
+das Zentrum,das,Zentren,noun,center,stadt
+der Bahnhof,der,Bahnhöfe,noun,train station,verkehr
+die Straße,die,Straßen,noun,street,stadt
+der Platz,der,Plätze,noun,square/seat,stadt
+der Park,der,Parks,noun,park,stadt
+die Kirche,die,Kirchen,noun,church,stadt
+das Museum,das,Museen,noun,museum,stadt
+gehen,,,verb,to go (walk),stadt
+fahren,,,verb,to drive/travel,verkehr
+der Bus,der,Busse,noun,bus,verkehr
+die Bahn,die,Bahnen,noun,train,verkehr
+das Auto,das,Autos,noun,car,verkehr
+das Fahrrad,das,Fahrräder,noun,bicycle,verkehr
+das Taxi,das,Taxis,noun,taxi,verkehr
+die Haltestelle,die,Haltestellen,noun,bus/tram stop,verkehr
+der Weg,der,Wege,noun,way/path,verkehr
+links,,,adv,left,verkehr
+rechts,,,adv,right,verkehr
+geradeaus,,,adv,straight ahead,verkehr
+nah,,,adj,near,verkehr
+weit,,,adj,far,verkehr
+in,,,prep,in,funktionswoerter
+an,,,prep,at/on,funktionswoerter
+auf,,,prep,on,funktionswoerter
+unter,,,prep,under,funktionswoerter
+neben,,,prep,next to,funktionswoerter
+vor,,,prep,in front of / before,funktionswoerter
+hinter,,,prep,behind,funktionswoerter
+zwischen,,,prep,between,funktionswoerter
+bei,,,prep,at/near,funktionswoerter
+mit,,,prep,with,funktionswoerter
+ohne,,,prep,without,funktionswoerter
+für,,,prep,for,funktionswoerter
+nach,,,prep,after/to,funktionswoerter
+von,,,prep,from,funktionswoerter
+zu,,,prep,to,funktionswoerter
+aus,,,prep,out of / from,funktionswoerter
+über,,,prep,over/about,funktionswoerter
+der Körper,der,Körper,noun,body,koerper
+der Kopf,der,Köpfe,noun,head,koerper
+die Hand,die,Hände,noun,hand,koerper
+der Arm,der,Arme,noun,arm,koerper
+das Bein,das,Beine,noun,leg,koerper
+der Bauch,der,Bäuche,noun,stomach,koerper
+das Auge,das,Augen,noun,eye,koerper
+das Ohr,das,Ohren,noun,ear,koerper
+krank,,,adj,sick,gesundheit
+gesund,,,adj,healthy,gesundheit
+müde,,,adj,tired,gesundheit
+die Kleidung,die,,noun,clothing,kleidung
+die Hose,die,Hosen,noun,trousers,kleidung
+das Hemd,das,Hemden,noun,shirt,kleidung
+das T-Shirt,das,T-Shirts,noun,t-shirt,kleidung
+der Rock,der,Röcke,noun,skirt,kleidung
+die Jacke,die,Jacken,noun,jacket,kleidung
+die Schuhe,die,,noun,shoes,kleidung
+rot,,,adj,red,kleidung
+blau,,,adj,blue,kleidung
+grün,,,adj,green,kleidung
+gelb,,,adj,yellow,kleidung
+schwarz,,,adj,black,kleidung
+weiß,,,adj,white,kleidung
+machen,,,verb,to make/do,alltag
+geben,,,verb,to give,alltag
+nehmen,,,verb,to take,alltag
+sagen,,,verb,to say,alltag
+fragen,,,verb,to ask,alltag
+antworten,,,verb,to answer,alltag
+wissen,,,verb,to know (fact),alltag
+denken,,,verb,to think,alltag
+glauben,,,verb,to believe,alltag
+helfen,,,verb,to help,alltag
+zeigen,,,verb,to show,alltag
+öffnen,,,verb,to open,alltag
+schließen,,,verb,to close,alltag
+warten,,,verb,to wait,alltag
+gut,,,adj,good,alltag
+schlecht,,,adj,bad,alltag
+viel,,,adj,much/many,alltag
+wenig,,,adj,little/few,alltag
+alle,,,pron,all,alltag
+etwas,,,pron,something,alltag
+nichts,,,pron,nothing,alltag
+immer,,,adv,always,alltag
+oft,,,adv,often,alltag
+manchmal,,,adv,sometimes,alltag
+nie,,,adv,never,alltag
+schon,,,adv,already,alltag
+noch,,,adv,still/yet,alltag
+sehr,,,adv,very,alltag
+auch,,,adv,also,alltag
+hier,,,adv,here,alltag
+da,,,adv,there,alltag

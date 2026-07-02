@@ -1,0 +1,45 @@
+{
+  "level": "A2",
+  "name": "Goethe-Zertifikat A2",
+  "pass_pct": 60,
+  "scoring": "total",
+  "modules": {
+    "lesen": {
+      "time_min": 30,
+      "scale_to": 25,
+      "parts": [
+        { "teil": 1, "items": 5, "kind": "mc3", "spec": "Zeitungsmeldungen / kurze Sachtexte. Frage + 3 Optionen." },
+        { "teil": 2, "items": 5, "kind": "mc3", "spec": "Informationstafel/Programm/Ordnung: Wo/Wann findet man was? 3 Optionen." },
+        { "teil": 3, "items": 5, "kind": "mc3", "spec": "Private E-Mail. Fragen mit 3 Optionen." },
+        { "teil": 4, "items": 5, "kind": "match", "options": 8, "spec": "5 Situationen + 8 Anzeigen (a-h, eine passt nicht mehrfach). Zuordnen, auch 'keine passt' möglich (x)." }
+      ]
+    },
+    "hoeren": {
+      "time_min": 30,
+      "scale_to": 25,
+      "parts": [
+        { "teil": 1, "items": 5, "kind": "mc3", "plays": 2, "spec": "Kurze Ansagen (Durchsage, Anrufbeantworter, Radio)." },
+        { "teil": 2, "items": 5, "kind": "match", "options": 9, "plays": 1, "spec": "Gespräch: 5 Personen/Tage etwas zuordnen (z. B. Aktivitäten a-i)." },
+        { "teil": 3, "items": 5, "kind": "mc3", "plays": 1, "spec": "5 kurze Alltagsgespräche, je eine Frage." },
+        { "teil": 4, "items": 5, "kind": "truefalse", "plays": 2, "spec": "Interview (Radio). Aussagen richtig/falsch." }
+      ]
+    },
+    "schreiben": {
+      "time_min": 30,
+      "scale_to": 25,
+      "parts": [
+        { "teil": 1, "items": 1, "kind": "text", "points": 10, "words": 30, "content_points": 3, "spec": "Kurznachricht (SMS/Chat) an Freund*in mit 3 Inhaltspunkten." },
+        { "teil": 2, "items": 1, "kind": "text", "points": 10, "words": 40, "content_points": 3, "spec": "Halbformelle E-Mail (z. B. an Kursleitung, Vermieter) mit 3 Inhaltspunkten." }
+      ]
+    },
+    "sprechen": {
+      "time_min": 15,
+      "scale_to": 25,
+      "parts": [
+        { "teil": 1, "items": 4, "kind": "qa_cards", "points": 6, "spec": "Fragen zur Person anhand von Stichwortkarten (z. B. 'Wohnort?', 'Hobby?')." },
+        { "teil": 2, "items": 1, "kind": "monolog", "points": 8, "spec": "Von sich erzählen zu einem Thema mit 4 Leitpunkten (z. B. Mein Tag, Meine Familie)." },
+        { "teil": 3, "items": 1, "kind": "planning", "points": 11, "spec": "Gemeinsam etwas planen und aushandeln (z. B. Ausflug, Fest) — mit dem Prüfer-Tutor als Partner." }
+      ]
+    }
+  }
+}
