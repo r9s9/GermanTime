@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* GermanTime dark palette */
+  --color-bg: #09090c;
+  --color-surface: #101016;
+  --color-raised: #16161f;
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-ink: #e9e9ef;
+  --color-mute: #8d8d9c;
+  --color-gold: #ffc53d;
+  --color-ember: #ff5c5c;
+  --color-mint: #4ade80;
+  --color-sky: #60a5fa;
+  --color-violet: #a78bfa;
+
+  --animate-pop: pop 0.35s cubic-bezier(0.2, 1.4, 0.4, 1);
+  --animate-fade-up: fade-up 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  @keyframes pop {
+    0% { transform: scale(0.6); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes fade-up {
+    0% { transform: translateY(10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  @apply bg-bg text-ink font-sans antialiased;
+  background-image:
+    radial-gradient(1200px 600px at 80% -10%, rgba(255, 197, 61, 0.06), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(167, 139, 250, 0.05), transparent 60%);
+}
+
+::selection {
+  background: rgba(255, 197, 61, 0.3);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+/* Reusable primitives */
+.card {
+  @apply bg-surface border border-line rounded-2xl;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-medium
+    transition-all duration-150 select-none cursor-pointer
+    disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97];
+}
+
+.btn-gold {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-medium
+    transition-all duration-150 select-none cursor-pointer
+    disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97]
+    bg-gold text-black hover:brightness-110 shadow-[0_0_24px_rgba(255,197,61,0.25)];
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-medium
+    transition-all duration-150 select-none cursor-pointer
+    disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97]
+    bg-white/5 hover:bg-white/10 border border-line;
+}
+
+.chip {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium bg-white/5 border border-line text-mute;
+}
