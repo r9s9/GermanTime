@@ -71,6 +71,17 @@ function WordSpan({ word, sentence }: { word: string; sentence: string }) {
     }
   }
 
+  async function playAudio(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!gloss) return;
+    try {
+      const res = await api<{ url: string }>("/api/tts", { json: { text: gloss.lemma, engine: "piper" } });
+      new Audio(res.url).play();
+    } catch {
+      /* silently ignore — non-critical UX enhancement */
+    }
+  }
+
   return (
     <span className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
       <span className="cursor-help border-b border-dotted border-mute/40 transition-colors hover:border-gold/60 hover:text-gold">
@@ -82,7 +93,12 @@ function WordSpan({ word, sentence }: { word: string; sentence: string }) {
           {failed && <span className="text-ember">Übersetzung nicht verfügbar</span>}
           {gloss && (
             <>
-              <div className="font-semibold text-ink">
+              <div className="flex items-center gap-1.5 font-semibold text-ink">
+                <button onClick={playAudio} className="text-mute hover:text-gold" aria-label="Aussprache anhören">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <path d="M7 4.5v15l13-7.5L7 4.5Z" />
+                  </svg>
+                </button>
                 {gloss.article && <span className="text-gold">{gloss.article} </span>}
                 {gloss.lemma}
               </div>

@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api", tags=["settings"])
 
 DEFAULT_SETTINGS = {
     "daily_stretch_minutes": 15,
-    "voice_engine": "piper",  # piper|chatterbox — P6 bench decides the default
+    "voice_engine": "piper",  # piper|chatterbox — piper measured ~112ms p50 vs chatterbox's 2.2s p50 (see memory: project-chatterbox-latency); piper is the real-time default, chatterbox is an opt-in
     "goal_date_b1": None,  # computed on placement finish (today + 6 months)
     "scaffolding_override": None,  # null = automatic by level
 }
