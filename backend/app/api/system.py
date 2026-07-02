@@ -4,10 +4,9 @@ import platform
 import sys
 from functools import lru_cache
 
-import httpx
 from fastapi import APIRouter
 
-from .. import config
+from ..services.llm import server_status
 
 router = APIRouter(prefix="/api", tags=["system"])
 
@@ -28,16 +27,6 @@ def _torch_info() -> dict:
         return {"error": str(e)}
 
 
-async def lmstudio_models() -> dict:
-    try:
-        async with httpx.AsyncClient(timeout=4) as client:
-            r = await client.get(f"{config.LMSTUDIO_BASE_URL}/models")
-            r.raise_for_status()
-            return {"reachable": True, "models": [m["id"] for m in r.json().get("data", [])]}
-    except Exception as e:  # noqa: BLE001
-        return {"reachable": False, "error": str(e), "models": []}
-
-
 @router.get("/health")
 async def health() -> dict:
     return {
@@ -45,10 +34,10 @@ async def health() -> dict:
         "python": sys.version.split()[0],
         "platform": platform.platform(),
         "torch": _torch_info(),
-        "lmstudio": await lmstudio_models(),
+        "lmstudio": await server_status(),
     }
 
 
 @router.get("/models")
 async def models() -> dict:
-    return await lmstudio_models()
+    return await server_status()
