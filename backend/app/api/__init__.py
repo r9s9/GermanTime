@@ -1,6 +1,6 @@
 """Router registry — each phase appends its router here."""
 
-from . import exercises, factory, settings, system, translate
+from . import exercises, factory, placement, plan, progress, settings, system, translate
 
 all_routers = [
     system.router,
@@ -8,4 +8,7 @@ all_routers = [
     exercises.router,
     translate.router,
     factory.router,
+    placement.router,
+    plan.router,
+    progress.router,
 ]

@@ -17,9 +17,11 @@ type GradeResult = { score: number; correct: boolean; detail: Record<string, any
 
 export function ExercisePlayer({
   exercise,
+  blockId,
   onNext,
 }: {
   exercise: Exercise;
+  blockId?: string;
   onNext: (result: GradeResult) => void;
 }) {
   const [result, setResult] = useState<GradeResult | null>(null);
@@ -29,7 +31,9 @@ export function ExercisePlayer({
     if (result || submitting) return;
     setSubmitting(true);
     try {
-      const r = await api<GradeResult>(`/api/exercises/${exercise.id}/attempt`, { json: { response } });
+      const r = await api<GradeResult>(`/api/exercises/${exercise.id}/attempt`, {
+        json: { response, block_id: blockId ?? null },
+      });
       setResult(r);
     } finally {
       setSubmitting(false);

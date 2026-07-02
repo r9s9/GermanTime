@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { Exercise, ExercisePlayer } from "../components/ExercisePlayer";
 import { Icon } from "../components/Icon";
@@ -8,25 +9,45 @@ import { api } from "../lib/api";
 type Topic = { id: string; level: string; week: number; title_de: string; title_en: string };
 
 export default function Lernen() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [topics, setTopics] = useState<Topic[]>([]);
   const [selected, setSelected] = useState<Topic | null>(null);
+  const [blockId, setBlockId] = useState<string | null>(null);
   const [exercises, setExercises] = useState<Exercise[] | null>(null);
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scores, setScores] = useState<boolean[]>([]);
+  const startedAt = useRef<number>(0);
+  const autoStarted = useRef(false);
 
   useEffect(() => {
     api<Topic[]>("/api/grammar/topics").then(setTopics).catch((e) => setError(String(e)));
   }, []);
 
-  async function startLesson(topic: Topic) {
+  useEffect(() => {
+    if (autoStarted.current || topics.length === 0) return;
+    const topicId = searchParams.get("topic_id");
+    const block = searchParams.get("block_id");
+    if (!topicId) return;
+    const topic = topics.find((t) => t.id === topicId);
+    if (topic) {
+      autoStarted.current = true;
+      startLesson(topic, block);
+      setSearchParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topics]);
+
+  async function startLesson(topic: Topic, forBlockId: string | null = null) {
     setSelected(topic);
+    setBlockId(forBlockId);
     setLoading(true);
     setError(null);
     setExercises(null);
     setScores([]);
     setIndex(0);
+    startedAt.current = Date.now();
     try {
       const exs = await api<Exercise[]>(
         `/api/lessons/practice-set?topic_id=${encodeURIComponent(topic.id)}&level=${topic.level}&count=6`,
@@ -42,12 +63,18 @@ export default function Lernen() {
   }
 
   function next(correct: boolean) {
-    setScores((s) => [...s, correct]);
+    const newScores = [...scores, correct];
+    setScores(newScores);
     setIndex((i) => i + 1);
+    if (blockId && exercises && newScores.length >= exercises.length) {
+      const minutes = Math.max(1, Math.round((Date.now() - startedAt.current) / 60000));
+      api(`/api/plan/blocks/${blockId}/complete`, { json: { minutes_actual: minutes } }).catch(() => {});
+    }
   }
 
   function reset() {
     setSelected(null);
+    setBlockId(null);
     setExercises(null);
     setScores([]);
   }
@@ -70,7 +97,7 @@ export default function Lernen() {
               <motion.div className="h-full bg-gold" animate={{ width: `${(index / exercises.length) * 100}%` }} />
             </div>
             <AnimatePresence mode="wait">
-              <ExercisePlayer key={exercises[index].id} exercise={exercises[index]} onNext={(r) => next(r.correct)} />
+              <ExercisePlayer key={exercises[index].id} exercise={exercises[index]} blockId={blockId ?? undefined} onNext={(r) => next(r.correct)} />
             </AnimatePresence>
           </>
         )}

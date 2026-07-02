@@ -1,11 +1,14 @@
 import { AnimatePresence, motion } from "motion/react";
-import { NavLink, Route, Routes, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import { Icon } from "./components/Icon";
+import { api } from "./lib/api";
 import Dashboard from "./routes/Dashboard";
 import Einstellungen from "./routes/Einstellungen";
 import Fortschritt from "./routes/Fortschritt";
 import Lernen from "./routes/Lernen";
+import Onboarding from "./routes/Onboarding";
 import Pruefung from "./routes/Pruefung";
 import Sprechen from "./routes/Sprechen";
 
@@ -17,11 +20,30 @@ const nav = [
   { to: "/fortschritt", label: "Fortschritt", icon: "chart" },
 ];
 
-export default function App() {
+function OnboardingGate({ children }: { children: React.ReactNode }) {
+  const [ready, setReady] = useState<boolean | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    api<{ has_placement: boolean }>("/api/progress/overview")
+      .then((r) => {
+        if (!r.has_placement) {
+          navigate("/onboarding", { replace: true });
+        } else {
+          setReady(true);
+        }
+      })
+      .catch(() => setReady(true)); // fail open — never trap the user on a backend hiccup
+  }, [navigate]);
+
+  if (!ready) return null;
+  return <>{children}</>;
+}
+
+function AppShell() {
   const location = useLocation();
   return (
     <div className="flex h-full">
-      {/* Sidebar */}
       <aside className="flex w-56 shrink-0 flex-col border-r border-line bg-surface/60 backdrop-blur">
         <div className="flex items-center gap-2 px-5 pb-4 pt-6">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold/15 text-gold">
@@ -77,7 +99,6 @@ export default function App() {
         </div>
       </aside>
 
-      {/* Main */}
       <main className="min-w-0 flex-1 overflow-y-auto">
         <AnimatePresence mode="wait">
           <motion.div
@@ -100,5 +121,17 @@ export default function App() {
         </AnimatePresence>
       </main>
     </div>
+  );
+}
+
+export default function App() {
+  const location = useLocation();
+  if (location.pathname === "/onboarding") {
+    return <Onboarding />;
+  }
+  return (
+    <OnboardingGate>
+      <AppShell />
+    </OnboardingGate>
   );
 }
