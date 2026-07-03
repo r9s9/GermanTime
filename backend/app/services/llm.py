@@ -57,6 +57,40 @@ async def list_models() -> list[str]:
 # Settings. See memory: project-lmstudio-thinking-models.
 _THINKING_MODEL_HINTS = ("qwen3", "qwq", "deepseek-r1", "r1-")
 
+# Ordered preference for the "fast" (real-time conversation) role. Dense,
+# non-reasoning 7-14B models that hit the <1.5s first-token budget with strong
+# German. First available match wins; falls back to any non-thinking model.
+# (MoE models are excluded in spirit — measured 6.6-29s first token — but the
+# thinking-hint filter plus this positive list keeps auto-pick on known-good
+# dense models without needing an explicit MoE denylist.)
+_PREFERRED_FAST_HINTS = (
+    "qwen2.5-14b",
+    "mistral-nemo",
+    "gemma-2-9b",
+    "qwen2.5-7b",
+    "ministral",
+    "llama-3.1-8b",
+)
+
+# Ordered preference for the "tutor"/grader role (not latency-bound): larger
+# dense models first for better exercise/exam generation and grading quality.
+_PREFERRED_TUTOR_HINTS = (
+    "qwen2.5-32b",
+    "gemma-2-27b",
+    "qwen2.5-14b",
+    "gemma-2-9b",
+)
+
+
+def _pick_preferred(models: list[str], hints: tuple[str, ...]) -> str | None:
+    """First model whose id contains a hint, honoring hint order."""
+    lowered = [(m, m.lower()) for m in models]
+    for hint in hints:
+        for original, low in lowered:
+            if hint in low:
+                return original
+    return None
+
 
 async def resolve_model(role: str) -> str:
     """Return the model_id assigned to `role`, auto-assigning a suitable
@@ -78,7 +112,10 @@ async def resolve_model(role: str) -> str:
         )
     if role == "fast":
         non_thinking = [m for m in chat_models if not any(h in m.lower() for h in _THINKING_MODEL_HINTS)]
-        chosen = non_thinking[0] if non_thinking else chat_models[0]
+        pool = non_thinking or chat_models
+        chosen = _pick_preferred(pool, _PREFERRED_FAST_HINTS) or pool[0]
+    elif role == "tutor":
+        chosen = _pick_preferred(chat_models, _PREFERRED_TUTOR_HINTS) or chat_models[0]
     else:
         chosen = chat_models[0]
     with SessionLocal() as db:

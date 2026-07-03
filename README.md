@@ -21,6 +21,29 @@ Everything runs on your own machine — the tutor, the speech recognition, the t
 - [LM Studio](https://lmstudio.ai/) installed, with at least one instruction-tuned chat model downloaded (a ~14B model is a good balance of speed and quality for the "fast" real-time-conversation role; a larger model works fine for the "tutor" role used for exercise/exam generation, which isn't latency-sensitive).
 - Python 3.11, Node 18+, PowerShell.
 
+### Recommended models
+
+Two roles matter, and they have opposite priorities. Assign them in **Einstellungen** (Settings) — the app also auto-picks sensible defaults on first use.
+
+**`fast` role — real-time voice conversation.** Latency is everything here (target <1.5 s from end-of-speech to first audio), so pick a **dense, non-reasoning 7–14B** model with strong German. Avoid MoE and "thinking"/reasoning models — both blow the latency budget (the app already excludes reasoning models from this role automatically).
+
+| Pick | LM Studio search | ~VRAM (Q5_K_M) | Notes |
+|---|---|---|---|
+| **1 (default)** | `Qwen2.5-14B-Instruct` | ~11 GB | Best quality-per-latency; ~0.6–1 s first token, excellent German. |
+| 2 | `Mistral-Nemo-Instruct-2407` | ~9 GB | European-tuned, very idiomatic German. |
+| 3 | `Gemma-2-9B-it` | ~7 GB | Great German for its size; more headroom for Chatterbox. |
+| 4 | `Qwen2.5-7B-Instruct` / `Ministral-8B-Instruct` | ~6 GB | Lowest latency; use these if you enable Chatterbox (natural TTS). |
+
+**`tutor` role — exercise/exam generation and grading.** Not latency-bound, so go bigger for quality: `Qwen2.5-32B-Instruct` (~19 GB Q4) or `Gemma-2-27B-it`. If you'd rather not hold two large models plus the voice stack at once, just reuse the 14B for both roles — it's plenty good.
+
+**LM Studio load settings** (matter as much as the model choice):
+- Quant **`Q4_K_M`** (fastest) or **`Q5_K_M`** (best quality, still small on a 5090). Skip Q6/Q8 — no perceptible German gain.
+- Enable **Flash Attention** and **K/V cache**.
+- **Context length 8192** (what `start.ps1` preloads) — don't over-allocate; it costs latency.
+- **GPU offload = max** so nothing spills to CPU.
+
+**VRAM coexistence (32 GB):** a 14B fast model (~11 GB) + Whisper (~2 GB) + wav2vec2 pronunciation model (~0.7 GB) leaves ample room; add Chatterbox (~6 GB) for natural TTS and you're still comfortable. A 32B tutor model (~19 GB) is best swapped in on demand rather than held alongside the full voice stack — the content factory already pauses during conversations to avoid GPU contention.
+
 ## Setup
 
 ```powershell

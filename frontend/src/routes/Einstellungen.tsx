@@ -108,8 +108,12 @@ export default function Einstellungen() {
       {health?.lmstudio.reachable && (
         <section className="card mt-4 px-6 py-4">
           <h2 className="pb-2 pt-1 text-sm font-semibold text-mute">Modellrollen</h2>
-          <p className="pb-3 text-xs text-mute">
+          <p className="pb-1 text-xs text-mute">
             Welches lokale Modell übernimmt welche Rolle. Ein starkes Modell für Tutor + Bewertung reicht meist aus.
+          </p>
+          <p className="pb-3 text-xs text-mute/70">
+            Empfohlen für „Schnell" (Echtzeit-Gespräch): Qwen2.5-14B-Instruct — schnell und gutes Deutsch.
+            Denk-/Reasoning-Modelle sind hier zu langsam und werden automatisch gemieden.
           </p>
           {(["tutor", "fast"] as const).map((role) => (
             <div key={role} className="flex items-center justify-between border-b border-line py-3 last:border-0">

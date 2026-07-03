@@ -179,15 +179,41 @@ async def test_fast_role_avoids_thinking_models_when_auto_assigning(db_session, 
 
 
 @pytest.mark.asyncio
-async def test_tutor_role_has_no_thinking_model_bias(db_session, monkeypatch):
+async def test_fast_role_prefers_recommended_model_over_generic(db_session, monkeypatch):
     _use_test_db_for_resolve_model(monkeypatch)
 
     async def fake_list_models():
-        return ["qwen/qwen3.5-35b-a3b", "qwen2.5-14b-instruct"]
+        # A generic dense model is listed first, but the recommended one should win.
+        return ["some-generic-8b-instruct", "qwen/qwen3-32b", "gemma-2-9b-it"]
+
+    monkeypatch.setattr(llm, "list_models", fake_list_models)
+    model_id = await llm.resolve_model("fast")
+    assert model_id == "gemma-2-9b-it"  # preferred, and never the qwen3 thinking model
+
+
+@pytest.mark.asyncio
+async def test_fast_role_honors_preference_order(db_session, monkeypatch):
+    _use_test_db_for_resolve_model(monkeypatch)
+
+    async def fake_list_models():
+        # Both are recommended; qwen2.5-14b outranks mistral-nemo in the list.
+        return ["mistral-nemo-instruct-2407", "qwen2.5-14b-instruct"]
+
+    monkeypatch.setattr(llm, "list_models", fake_list_models)
+    model_id = await llm.resolve_model("fast")
+    assert model_id == "qwen2.5-14b-instruct"
+
+
+@pytest.mark.asyncio
+async def test_tutor_role_prefers_larger_dense_model(db_session, monkeypatch):
+    _use_test_db_for_resolve_model(monkeypatch)
+
+    async def fake_list_models():
+        return ["qwen/qwen3.5-35b-a3b", "qwen2.5-14b-instruct", "qwen2.5-32b-instruct"]
 
     monkeypatch.setattr(llm, "list_models", fake_list_models)
     model_id = await llm.resolve_model("tutor")
-    assert model_id == "qwen/qwen3.5-35b-a3b"  # first available, no bias applied
+    assert model_id == "qwen2.5-32b-instruct"  # largest recommended dense model wins
 
 
 @pytest.mark.asyncio
